@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/check_rclone_installation.dart';
+import 'widgets/remote_tile.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,24 +27,26 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Rclone GUI'),
         centerTitle: false,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: FutureBuilder(
+        future: getRcloneDriveRemotes(),
+        builder: (_, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(child: Text('Lendo configuração do rclone...'));
+          }
+
+          var remotes = snapshot.data!;
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: remotes.length,
+            itemBuilder: (_, index) => RemoteTile(remote: remotes[index]),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 150,
+              mainAxisSpacing: 8,
+              mainAxisExtent: 150,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          );
+        },
       ),
     );
   }
