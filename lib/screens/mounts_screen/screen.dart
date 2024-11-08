@@ -53,7 +53,11 @@ class _MountsScreenState extends State<MountsScreen> {
         itemCount: _mounts.length,
         itemBuilder: (_, index) => Padding(
           padding: const EdgeInsets.only(top: 6, bottom: 6),
-          child: MountTile(_mounts[index]),
+          child: MountTile(
+            _mounts[index],
+            editCallback: () => setState(() {}),
+            deleteCallback: () => setState(() => _mounts.removeAt(index)),
+          ),
         ),
       );
     }

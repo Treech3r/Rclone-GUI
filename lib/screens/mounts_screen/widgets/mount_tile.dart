@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/mount.dart';
+import '../../mount_editing/screen.dart';
 
 class MountTile extends StatelessWidget {
   final Mount mount;
+  final VoidCallback editCallback;
+  final VoidCallback deleteCallback;
 
-  const MountTile(this.mount, {super.key});
+  const MountTile(
+    this.mount, {
+    required this.editCallback,
+    required this.deleteCallback,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +39,17 @@ class MountTile extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Configurar',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push<Mount>(
+                MaterialPageRoute(
+                  builder: (_) => MountEditingScreen(
+                    mount: mount,
+                    editCallback: editCallback,
+                    deleteCallback: deleteCallback,
+                  ),
+                ),
+              );
+            },
             icon: Icon(Icons.settings),
             iconSize: 30,
           ),

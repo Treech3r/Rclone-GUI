@@ -2,13 +2,13 @@ import 'remote.dart';
 
 class Mount {
   final int id;
-  final String name;
-  final Remote remote;
-  final String remotePath;
-  final String mountPoint;
-  final bool allowWrite;
+  String name;
+  Remote remote;
+  String remotePath;
+  String mountPoint;
+  bool allowWrite;
 
-  const Mount({
+  Mount({
     required this.id,
     required this.name,
     required this.remote,

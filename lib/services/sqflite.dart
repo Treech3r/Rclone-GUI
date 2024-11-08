@@ -29,6 +29,25 @@ class SqfliteService {
     return await _db.insert('Mount', mountMap);
   }
 
+  static Future<void> updateMount(Mount mount) async {
+    var mountMap = mount.toJson();
+
+    await _db.update(
+      'Mount',
+      mountMap,
+      where: 'ID = ?',
+      whereArgs: [mount.id],
+    );
+  }
+
+  static Future<void> deleteMount(Mount mount) async {
+    await _db.delete(
+      'Mount',
+      where: 'ID = ?',
+      whereArgs: [mount.id],
+    );
+  }
+
   static Future<List<Mount>> getAllMounts() async {
     var remotes = await getRcloneDriveRemotes();
     var result = await _db.query('Mount');
