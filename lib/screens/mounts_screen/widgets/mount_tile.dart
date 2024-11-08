@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:process_run/process_run.dart';
 
 import '../../../models/mount.dart';
 import '../../mount_editing/screen.dart';
@@ -33,7 +36,23 @@ class MountTile extends StatelessWidget {
         children: [
           IconButton(
             tooltip: 'Montar',
-            onPressed: () {},
+            onPressed: () {
+              var mountCommand =
+                  'rclone mount "${mount.remote.name}:" "${mount.mountPath}" --vfs-cache-mode=full';
+
+              if (!mount.allowWrite) {
+                mountCommand = '$mountCommand --read-only';
+              }
+
+              if (Platform.isWindows) {
+                mountCommand = '$mountCommand --network-mode';
+              } else {
+                mountCommand = '$mountCommand --daemon';
+              }
+
+              var shell = Shell();
+              shell.run(mountCommand);
+            },
             icon: Icon(Icons.play_arrow),
             iconSize: 30,
           ),
