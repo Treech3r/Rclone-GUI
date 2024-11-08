@@ -18,7 +18,7 @@ class SqfliteService {
 
   static Future<void> _createDatabase(Database database, int _) async {
     await database.execute(
-      'CREATE TABLE Mount(id INTEGER PRIMARY KEY, name TEXT, remote TEXT, remotePath TEXT, mountPoint TEXT, allowWrite BOOLEAN)',
+      'CREATE TABLE Mount(id INTEGER PRIMARY KEY, name TEXT, remote TEXT, remotePath TEXT, mountPath TEXT, allowWrite BOOLEAN)',
     );
   }
 

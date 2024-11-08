@@ -5,7 +5,7 @@ class Mount {
   String name;
   Remote remote;
   String remotePath;
-  String mountPoint;
+  String mountPath;
   bool allowWrite;
 
   Mount({
@@ -13,7 +13,7 @@ class Mount {
     required this.name,
     required this.remote,
     required this.remotePath,
-    required this.mountPoint,
+    required this.mountPath,
     required this.allowWrite,
   });
 
@@ -23,7 +23,7 @@ class Mount {
       name: json['name'],
       remote: json['remote'],
       remotePath: json['remotePath'],
-      mountPoint: json['mountPoint'],
+      mountPath: json['mountPath'],
       allowWrite: json['allowWrite'] == 0 ? false : true,
     );
   }
@@ -34,7 +34,7 @@ class Mount {
       'name': name,
       'remote': remote.name,
       'remotePath': remotePath,
-      'mountPoint': mountPoint,
+      'mountPath': mountPath,
       'allowWrite': allowWrite ? 1 : 0,
     };
   }
