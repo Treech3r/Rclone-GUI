@@ -11,14 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (_, index) => RemoteTile(remote: remotes[index]),
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 150,
-              mainAxisSpacing: 8,
-              mainAxisExtent: 150,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              mainAxisExtent: 100,
             ),
           );
         },
