@@ -40,7 +40,6 @@ class TryAgainButton extends StatelessWidget {
         final rcloneInstalled = await isRcloneInstalled();
 
         if (context.mounted) {
-          print(rcloneInstalled);
           if (!rcloneInstalled) {
             showRcloneNotFoundModalSheet(context);
           } else {
