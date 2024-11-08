@@ -135,7 +135,6 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
                   onChanged: (newValue) => setState(() {
                     readOnly = newValue!;
                   }),
-                  semanticLabel: 'Teste',
                 ),
                 Text('Apenas leitura')
               ],
