@@ -5,11 +5,13 @@ import '../../../models/remote.dart';
 
 class RemoteTile extends StatefulWidget {
   final Remote remote;
-  final BuildContext parentContext;
+  final BuildContext? parentContext;
+  final VoidCallback? overrideCallback;
 
   const RemoteTile({
     required this.remote,
-    required this.parentContext,
+    this.overrideCallback,
+    this.parentContext,
     super.key,
   });
 
@@ -28,7 +30,13 @@ class _RemoteTileState extends State<RemoteTile> {
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
       child: GestureDetector(
-        onTap: () => Navigator.of(widget.parentContext).pop(widget.remote),
+        onTap: () {
+          if (widget.overrideCallback != null) {
+            widget.overrideCallback!();
+          } else {
+            Navigator.of(widget.parentContext!).pop(widget.remote);
+          }
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           color: isHovered ? primaryColor : inversePrimaryColor,

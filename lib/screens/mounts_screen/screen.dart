@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../models/mount.dart';
 import '../../services/sqflite.dart';
+import '../mount_creation/screen.dart';
 
 class MountsScreen extends StatefulWidget {
   const MountsScreen({super.key});
@@ -10,37 +12,57 @@ class MountsScreen extends StatefulWidget {
 }
 
 class _MountsScreenState extends State<MountsScreen> {
+  List<Mount> _mounts = [];
+  bool fetched = false;
+
+  @override
+  void initState() {
+    SqfliteService.getAllMounts().then((mounts) => setState(() {
+          _mounts = mounts;
+          fetched = true;
+        }));
+
+    super.initState();
+  }
+
+  Future<void> addMount(BuildContext context) async {
+    Mount? mount = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => MountCreationScreen()));
+
+    if (mount == null) {
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget bodyContent;
+
+    if (!fetched) {
+      bodyContent = Center(child: Text('Buscando remotes...'));
+    } else if (_mounts.isEmpty) {
+      bodyContent = EmptyWarning(() => addMount(context));
+    } else {
+      // TODO: return actual data
+      bodyContent = Container();
+    }
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-        child: Icon(Icons.add),
-      ),
-      body: FutureBuilder(
-        future: SqfliteService.getAllMounts(),
-        builder: (_, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: Text('Buscando remotes...'));
-          }
-
-          var remotes = snapshot.data!;
-
-          if (remotes.isEmpty) {
-            return EmptyWarning();
-          }
-
-          // TODO: return actual data
-          return Container();
-        },
-      ),
+      floatingActionButton: _mounts.isEmpty
+          ? null
+          : FloatingActionButton(
+              onPressed: () => addMount(context),
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
+              child: Icon(Icons.add),
+            ),
+      body: bodyContent,
     );
   }
 }
 
 class EmptyWarning extends StatelessWidget {
-  const EmptyWarning({super.key});
+  final VoidCallback callback;
+
+  const EmptyWarning(this.callback, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +84,20 @@ class EmptyWarning extends StatelessWidget {
         Text(
           'Que tal criar seu primeiro mount?',
           style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: 20),
+        FilledButton(
+          onPressed: callback,
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Colors.deepPurpleAccent),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              'Criar primeiro mount',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
         ),
       ],
     );

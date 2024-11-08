@@ -22,7 +22,7 @@ class Mount {
       remote: json['remote'],
       remotePath: json['remotePath'],
       mountPoint: json['mountPoint'],
-      allowWrite: json['allowWrite'],
+      allowWrite: json['allowWrite'] == 0 ? false : true,
     );
   }
 
