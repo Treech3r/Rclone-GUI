@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'screens/mounts_screen/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
-import 'screens/remote_selection/screen.dart';
+import 'services/sqflite.dart';
 import 'utils/check_rclone_installation.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SqfliteService.initialize();
   runApp(MyApp(await isRcloneInstalled()));
 }
 
@@ -26,9 +29,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: rcloneInstalled
-          ? const RemoteSelectionScreen()
-          : RcloneNotInstalledScreen(),
+      home: rcloneInstalled ? const MountsScreen() : RcloneNotInstalledScreen(),
     );
   }
 }
