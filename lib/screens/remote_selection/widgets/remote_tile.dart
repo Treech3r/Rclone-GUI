@@ -16,7 +16,7 @@ class RemoteTile extends StatefulWidget {
   });
 
   @override
-  _RemoteTileState createState() => _RemoteTileState();
+  State<RemoteTile> createState() => _RemoteTileState();
 }
 
 class _RemoteTileState extends State<RemoteTile> {
