@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/remote.dart';
+
 class RemoteTile extends StatefulWidget {
-  final Map<String, String> remote;
+  final Remote remote;
   final BuildContext parentContext;
 
   const RemoteTile({
@@ -35,19 +37,16 @@ class _RemoteTileState extends State<RemoteTile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.folder,
-                  color: isHovered ? inversePrimaryColor : primaryColor,
-                ),
+                Image.asset(widget.remote.getCommercialLogo),
                 SizedBox(height: 12),
                 CustomText(
-                  text: widget.remote['name']!,
+                  text: widget.remote.name,
                   color: isHovered ? inversePrimaryColor : primaryColor,
                 ),
                 Opacity(
                   opacity: 0.7,
                   child: CustomText(
-                    text: widget.remote['type']!,
+                    text: widget.remote.type,
                     color: isHovered ? inversePrimaryColor : primaryColor,
                   ),
                 ),

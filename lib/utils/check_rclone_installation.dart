@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:process_run/process_run.dart';
 
+import '../models/remote.dart';
+
 Future<bool> isRcloneInstalled() async {
   return whichSync('rclone') != null;
 }
 
-Future<List<Map<String, String>>> getRcloneDriveRemotes() async {
+Future<List<Remote>> getRcloneDriveRemotes() async {
   var shell = Shell();
   var result = await shell.run('rclone listremotes --json --type drive');
 
@@ -16,14 +18,9 @@ Future<List<Map<String, String>>> getRcloneDriveRemotes() async {
 
   var rawRemotes = (result.first.stdout as String);
 
-  List<dynamic> remotes = jsonDecode(rawRemotes);
+  List<Map<String, dynamic>> remotes = jsonDecode(rawRemotes);
 
-  var remotesMap = remotes
-      .map((remote) => ({
-            'name': remote['name'] as String,
-            'type': remote['type'] as String,
-          }))
-      .toList();
+  var remotesMap = remotes.map(Remote.fromJson).toList();
 
   return remotesMap;
 }
