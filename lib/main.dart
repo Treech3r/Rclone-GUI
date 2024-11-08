@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
+import 'screens/remote_selection/screen.dart';
 import 'utils/check_rclone_installation.dart';
 
 void main() async {
@@ -26,7 +26,9 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: rcloneInstalled ? const HomeScreen() : RcloneNotInstalledScreen(),
+      home: rcloneInstalled
+          ? const RemoteSelectionScreen()
+          : RcloneNotInstalledScreen(),
     );
   }
 }

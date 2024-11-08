@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/check_rclone_installation.dart';
-import '../home/screen.dart';
+import '../remote_selection/screen.dart';
 
 class RcloneNotInstalledScreen extends StatefulWidget {
   const RcloneNotInstalledScreen({super.key});
@@ -77,7 +77,7 @@ class TryAgainButton extends StatelessWidget {
   }
 
   void navigateToHomePage(BuildContext context) {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => RemoteSelectionScreen()));
   }
 }

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class RemoteTile extends StatefulWidget {
   final Map<String, String> remote;
+  final BuildContext parentContext;
 
-  const RemoteTile({required this.remote, super.key});
+  const RemoteTile({
+    required this.remote,
+    required this.parentContext,
+    super.key,
+  });
 
   @override
   _RemoteTileState createState() => _RemoteTileState();
@@ -19,32 +24,35 @@ class _RemoteTileState extends State<RemoteTile> {
     return MouseRegion(
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        color: isHovered ? primaryColor : inversePrimaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.folder,
-                color: isHovered ? inversePrimaryColor : primaryColor,
-              ),
-              SizedBox(height: 12),
-              CustomText(
-                text: widget.remote['name']!,
-                color: isHovered ? inversePrimaryColor : primaryColor,
-              ),
-              Opacity(
-                opacity: 0.7,
-                child: CustomText(
-                  text: widget.remote['type']!,
+      child: GestureDetector(
+        onTap: () => Navigator.of(widget.parentContext).pop(widget.remote),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          color: isHovered ? primaryColor : inversePrimaryColor,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.folder,
                   color: isHovered ? inversePrimaryColor : primaryColor,
                 ),
-              ),
-            ],
+                SizedBox(height: 12),
+                CustomText(
+                  text: widget.remote['name']!,
+                  color: isHovered ? inversePrimaryColor : primaryColor,
+                ),
+                Opacity(
+                  opacity: 0.7,
+                  child: CustomText(
+                    text: widget.remote['type']!,
+                    color: isHovered ? inversePrimaryColor : primaryColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

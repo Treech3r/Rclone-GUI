@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 import '../../utils/check_rclone_installation.dart';
 import 'widgets/remote_tile.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class RemoteSelectionScreen extends StatefulWidget {
+  const RemoteSelectionScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<RemoteSelectionScreen> createState() => _RemoteSelectionScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Rclone GUI'),
-        centerTitle: false,
+        title: Text('Selecione um remote'),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: Icon(Icons.arrow_back_outlined),
+        ),
       ),
       body: FutureBuilder(
         future: getRcloneDriveRemotes(),
@@ -31,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return GridView.builder(
             padding: const EdgeInsets.all(12),
             itemCount: remotes.length,
-            itemBuilder: (_, index) => RemoteTile(remote: remotes[index]),
+            itemBuilder: (_, index) =>
+                RemoteTile(remote: remotes[index], parentContext: context),
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 150,
               mainAxisSpacing: 12,
