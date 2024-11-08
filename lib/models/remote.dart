@@ -4,7 +4,7 @@ class Remote {
 
   Remote({required this.name, required this.type});
 
-  factory Remote.fromJson(Map<String, dynamic> json) {
+  factory Remote.fromJson(dynamic json) {
     return Remote(
       name: json['name']!,
       type: json['type']!,

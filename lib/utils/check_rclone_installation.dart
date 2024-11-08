@@ -18,7 +18,7 @@ Future<List<Remote>> getRcloneDriveRemotes() async {
 
   var rawRemotes = (result.first.stdout as String);
 
-  List<Map<String, dynamic>> remotes = jsonDecode(rawRemotes);
+  List<dynamic> remotes = jsonDecode(rawRemotes);
 
   var remotesMap = remotes.map(Remote.fromJson).toList();
 
