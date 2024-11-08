@@ -41,7 +41,7 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
     var mount = Mount(
       id: 0,
       name: textController.text,
-      remote: selectedRemote!.name,
+      remote: selectedRemote!,
       remotePath: '',
       mountPoint: '',
       allowWrite: !readOnly,

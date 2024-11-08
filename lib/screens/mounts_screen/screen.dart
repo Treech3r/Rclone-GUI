@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/mount.dart';
 import '../../services/sqflite.dart';
 import '../mount_creation/screen.dart';
+import 'widgets/mount_tile.dart';
 
 class MountsScreen extends StatefulWidget {
   const MountsScreen({super.key});
@@ -32,6 +33,10 @@ class _MountsScreenState extends State<MountsScreen> {
     if (mount == null) {
       return;
     }
+
+    setState(() {
+      _mounts.add(mount);
+    });
   }
 
   @override
@@ -43,13 +48,26 @@ class _MountsScreenState extends State<MountsScreen> {
     } else if (_mounts.isEmpty) {
       bodyContent = EmptyWarning(() => addMount(context));
     } else {
-      // TODO: return actual data
-      bodyContent = Container();
+      bodyContent = ListView.builder(
+        padding: const EdgeInsets.only(top: 6, left: 12, right: 12, bottom: 80),
+        itemCount: _mounts.length,
+        itemBuilder: (_, index) => Padding(
+          padding: const EdgeInsets.only(top: 6, bottom: 6),
+          child: MountTile(_mounts[index]),
+        ),
+      );
     }
     return Scaffold(
+      appBar: _mounts.isEmpty
+          ? null
+          : AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: Text('Seus mounts'),
+            ),
       floatingActionButton: _mounts.isEmpty
           ? null
           : FloatingActionButton(
+              tooltip: 'Criar novo mount',
               onPressed: () => addMount(context),
               backgroundColor: Theme.of(context).colorScheme.tertiary,
               child: Icon(Icons.add),

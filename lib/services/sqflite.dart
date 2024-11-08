@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../models/mount.dart';
+import '../utils/check_rclone_installation.dart';
 
 class SqfliteService {
   static late Database _db;
@@ -22,11 +23,20 @@ class SqfliteService {
   }
 
   static Future<int> insertMount(Mount mount) async {
-    return await _db.insert('Mount', mount.toJson());
+    var mountMap = mount.toJson();
+    mountMap.remove('id');
+
+    return await _db.insert('Mount', mountMap);
   }
 
   static Future<List<Mount>> getAllMounts() async {
+    var remotes = await getRcloneDriveRemotes();
     var result = await _db.query('Mount');
-    return result.map(Mount.fromJson).toList();
+
+    // TODO: deal with the case where no remote is found by name
+    return result.map((r) {
+      var remote = remotes.firstWhere((a) => a.name == r['remote']);
+      return Mount.fromJson({...r, 'remote': remote});
+    }).toList();
   }
 }
