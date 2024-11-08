@@ -10,6 +10,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final bool rcloneInstalled;
+
   const MyApp(this.rcloneInstalled, {super.key});
 
   @override
@@ -18,7 +19,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Rclone GUI',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.highContrastDark(
+          brightness: Brightness.dark,
+          onPrimary: const Color(0xFF202020),
+          primary: const Color(0xFFc2c2c2),
+        ),
         useMaterial3: true,
       ),
       home: rcloneInstalled ? const HomeScreen() : RcloneNotInstalledScreen(),
