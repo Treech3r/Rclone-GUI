@@ -16,7 +16,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Selecione um remote'),
+        title: Text('Qual remote deseja montar?'),
         centerTitle: true,
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
@@ -41,7 +41,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
               maxCrossAxisExtent: 150,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              mainAxisExtent: 100,
+              mainAxisExtent: 150,
             ),
           );
         },

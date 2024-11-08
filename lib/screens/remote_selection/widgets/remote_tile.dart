@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/remote.dart';
 
@@ -37,8 +38,12 @@ class _RemoteTileState extends State<RemoteTile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(widget.remote.getCommercialLogo),
-                SizedBox(height: 12),
+                SvgPicture.asset(
+                  widget.remote.getCommercialLogo,
+                  fit: BoxFit.scaleDown,
+                  height: 50,
+                ),
+                SizedBox(height: 18),
                 CustomText(
                   text: widget.remote.name,
                   color: isHovered ? inversePrimaryColor : primaryColor,
@@ -46,7 +51,7 @@ class _RemoteTileState extends State<RemoteTile> {
                 Opacity(
                   opacity: 0.7,
                   child: CustomText(
-                    text: widget.remote.type,
+                    text: widget.remote.getCommercialName,
                     color: isHovered ? inversePrimaryColor : primaryColor,
                   ),
                 ),
