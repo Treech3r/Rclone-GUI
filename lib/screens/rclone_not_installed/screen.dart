@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/check_rclone_installation.dart';
+import '../../utils/rclone.dart';
 import '../remote_selection/screen.dart';
 
 class RcloneNotInstalledScreen extends StatefulWidget {

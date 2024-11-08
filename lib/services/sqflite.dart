@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../models/mount.dart';
-import '../utils/check_rclone_installation.dart';
+import '../utils/rclone.dart';
 
 class SqfliteService {
   static late Database _db;

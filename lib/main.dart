@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'screens/mounts_screen/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
 import 'services/sqflite.dart';
-import 'utils/check_rclone_installation.dart';
+import 'utils/rclone.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

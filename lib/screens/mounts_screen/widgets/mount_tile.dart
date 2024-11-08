@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:process_run/process_run.dart';
 
 import '../../../models/mount.dart';
+import '../../../utils/rclone.dart';
 import '../../mount_editing/screen.dart';
 
 class MountTile extends StatefulWidget {
@@ -32,21 +30,7 @@ class _MountTileState extends State<MountTile> {
       isMounting = true;
     });
 
-    var mountCommand =
-        'rclone mount "${widget.mount.remote.name}:" "${widget.mount.mountPath}" --vfs-cache-mode=full';
-
-    if (!widget.mount.allowWrite) {
-      mountCommand = '$mountCommand --read-only';
-    }
-
-    if (Platform.isWindows) {
-      mountCommand = '$mountCommand --network-mode';
-    } else {
-      mountCommand = '$mountCommand --daemon';
-    }
-
-    var shell = Shell();
-    shell.run(mountCommand);
+    await performMount(widget.mount);
 
     await Future.delayed(Duration(seconds: 2));
 
@@ -59,31 +43,6 @@ class _MountTileState extends State<MountTile> {
     setState(() {
       isMounting = false;
     });
-  }
-
-  // TODO: implement unmount
-  Future<void> unmount() async {
-    // setState(() {
-    //   isMounting = true;
-    // });
-    //
-    // var mountCommand =
-    //     'rclone mount "${widget.mount.remote.name}:" "${widget.mount.mountPath}" --vfs-cache-mode=writes';
-    //
-    // var shell = Shell();
-    // shell.run(mountCommand);
-    //
-    // await Future.delayed(Duration(seconds: 2));
-    //
-    // setState(() {
-    //   isMounted = true;
-    // });
-    //
-    // await Future.delayed(Duration(seconds: 3));
-    //
-    // setState(() {
-    //   isMounting = false;
-    // });
   }
 
   @override
