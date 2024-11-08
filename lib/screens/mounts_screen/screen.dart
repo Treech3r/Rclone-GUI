@@ -71,6 +71,7 @@ class _MountsScreenState extends State<MountsScreen> {
       floatingActionButton: _mounts.isEmpty
           ? null
           : FloatingActionButton(
+              shape: CircleBorder(),
               tooltip: 'Criar novo mount',
               onPressed: () => addMount(context),
               backgroundColor: Theme.of(context).colorScheme.tertiary,
