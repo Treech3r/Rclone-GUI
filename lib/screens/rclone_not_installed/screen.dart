@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/rclone.dart';
+import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
 
 class RcloneNotInstalledScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _RcloneNotInstalledScreenState extends State<RcloneNotInstalledScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Não foi possível localizar o rclone em seu sistema.'),
-            Text('Certifique-se de que o adicionou à variável PATH.'),
+            Text('Certifique-se de que o adicionou às variáveis de ambiente.'),
             SizedBox(height: 20),
             TryAgainButton(),
           ],
@@ -35,7 +36,8 @@ class TryAgainButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
+    return RoundedButton(
+      label: 'Verificar novamente',
       onPressed: () async {
         final rcloneInstalled = await isRcloneInstalled();
 
@@ -47,10 +49,6 @@ class TryAgainButton extends StatelessWidget {
           }
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Text('Verificar novamente'),
-      ),
     );
   }
 

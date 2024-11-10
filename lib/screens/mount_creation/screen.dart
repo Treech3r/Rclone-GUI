@@ -7,6 +7,7 @@ import '../../models/mount.dart';
 import '../../models/remote.dart';
 import '../../services/sqflite.dart';
 import '../../utils/windows.dart';
+import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
 import '../remote_selection/widgets/remote_tile.dart';
 
@@ -127,12 +128,9 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
         child: Column(
           children: [
             selectedRemote == null
-                ? TextButton(
+                ? RoundedButton(
+                    label: 'Selecionar remote',
                     onPressed: () => selectRemote(context),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Selecionar remote'),
-                    ),
                   )
                 : RemoteTile(
                     remote: selectedRemote!,
@@ -183,22 +181,10 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
       ),
       bottomSheet: selectedRemote == null || mountPath.isEmpty
           ? null
-          : Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: FilledButton(
-                onPressed: () => createMount(context),
-                style: ButtonStyle(
-                  backgroundColor:
-                      WidgetStateProperty.all(Colors.deepPurpleAccent),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Criar mount',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-              ),
+          : RoundedButton(
+              externalPadding: const EdgeInsets.all(12.0),
+              label: 'Criar mount',
+              onPressed: () => createMount(context),
             ),
     );
   }

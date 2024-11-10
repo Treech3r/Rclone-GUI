@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/mount.dart';
 import '../../../utils/rclone.dart';
+import '../../../widgets/rounded_button.dart';
 import '../../mount_editing/screen.dart';
 
 class MountTile extends StatefulWidget {
@@ -94,63 +95,26 @@ class _MountTileState extends State<MountTile> {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: isMounted
-                  ? [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: FilledButton(
+            Padding(
+              padding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: isMounted
+                    ? [
+                        RoundedButton(
+                          label: 'Desmontar',
                           onPressed: isMounting ? null : unMount,
-                          style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>(
-                              (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Colors.grey;
-                                }
-                                return Colors.red;
-                              },
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'Desmontar',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                        ),
-                      )
-                    ]
-                  : [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: FilledButton(
+                          enabledColor: Colors.red,
+                        )
+                      ]
+                    : [
+                        RoundedButton(
+                          label: 'Montar',
+                          enabledColor: Colors.green,
                           onPressed: isMounting ? null : mount,
-                          style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>(
-                              (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Colors.grey;
-                                }
-                                return Colors.green;
-                              },
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'Montar',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: FilledButton(
+                        RoundedButton(
+                          label: 'Editar mount',
                           onPressed: isMounting
                               ? null
                               : () {
@@ -164,27 +128,9 @@ class _MountTileState extends State<MountTile> {
                                     ),
                                   );
                                 },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>(
-                              (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Colors.grey;
-                                }
-                                return Colors.deepPurpleAccent;
-                              },
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              'Editar mount',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
                         ),
-                      )
-                    ],
+                      ],
+              ),
             ),
           ],
         ),

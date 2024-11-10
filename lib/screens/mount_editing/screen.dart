@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/mount.dart';
 import '../../models/remote.dart';
 import '../../services/sqflite.dart';
+import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
 import '../remote_selection/widgets/remote_tile.dart';
 
@@ -85,22 +86,10 @@ class _MountEditingScreenState extends State<MountEditingScreen> {
     return Scaffold(
       bottomSheet: selectedRemote == null
           ? null
-          : Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: FilledButton(
-                onPressed: () => editMount(context),
-                style: ButtonStyle(
-                  backgroundColor:
-                      WidgetStateProperty.all(Colors.deepPurpleAccent),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Salvar alterações',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-              ),
+          : RoundedButton(
+              externalPadding: const EdgeInsets.all(12.0),
+              label: 'Salvar alterações',
+              onPressed: () => editMount(context),
             ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -124,44 +113,17 @@ class _MountEditingScreenState extends State<MountEditingScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: FilledButton(
-                            onPressed: () => Navigator.of(ctx).pop(),
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
-                                Colors.deepPurpleAccent,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                'Cancelar',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ),
-                          ),
+                        RoundedButton(
+                          label: 'Cancelar',
+                          onPressed: () => Navigator.of(ctx).pop(),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: FilledButton(
-                            onPressed: () {
-                              deleteMount(context);
-                              Navigator.of(ctx).pop();
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.all(Colors.redAccent),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                'Deletar',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ),
-                          ),
-                        )
+                        RoundedButton(
+                          label: 'Deletar',
+                          onPressed: () {
+                            deleteMount(context);
+                            Navigator.of(ctx).pop();
+                          },
+                        ),
                       ],
                     )
                   ],
@@ -176,21 +138,13 @@ class _MountEditingScreenState extends State<MountEditingScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
         child: Column(
           children: [
-            selectedRemote == null
-                ? TextButton(
-                    onPressed: () => selectRemote(context),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Selecionar remote'),
-                    ),
-                  )
-                : RemoteTile(
-                    remote: selectedRemote!,
-                    overrideCallback: () => selectRemote(context),
-                  ),
+            RemoteTile(
+              remote: selectedRemote!,
+              overrideCallback: () => selectRemote(context),
+            ),
             SizedBox(height: 25),
             TextFormField(
               controller: textController,
