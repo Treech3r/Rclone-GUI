@@ -11,19 +11,28 @@ import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
 import '../remote_selection/widgets/remote_tile.dart';
 
-class MountCreationScreen extends StatefulWidget {
-  const MountCreationScreen({super.key});
+class MountInfoEditingScreen extends StatefulWidget {
+  final Mount? mount;
+  final VoidCallback? editCallback;
+  final VoidCallback? deleteCallback;
+
+  const MountInfoEditingScreen({
+    this.mount,
+    this.editCallback,
+    this.deleteCallback,
+    super.key,
+  });
 
   @override
-  State<MountCreationScreen> createState() => _MountCreationScreenState();
+  State<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
 }
 
-class _MountCreationScreenState extends State<MountCreationScreen> {
+class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
   List<String> windowsDriveLetters = [];
   String mountPath = '';
   bool readOnly = false;
   Remote? selectedRemote;
-  final textController = TextEditingController();
+  final mountNameTextController = TextEditingController();
 
   @override
   void initState() {
@@ -34,11 +43,18 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
 
       super.initState();
     }
+
+    if (widget.mount != null) {
+      mountPath = widget.mount!.mountPath;
+      readOnly = !widget.mount!.allowWrite;
+      selectedRemote = widget.mount!.remote;
+      mountNameTextController.text = widget.mount!.name ?? '';
+    }
   }
 
   @override
   void dispose() {
-    textController.dispose();
+    mountNameTextController.dispose();
     super.dispose();
   }
 
@@ -73,7 +89,9 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
   Future<void> createMount(BuildContext context) async {
     var mount = Mount(
       id: 0,
-      name: textController.text.isNotEmpty ? textController.text : null,
+      name: mountNameTextController.text.isNotEmpty
+          ? mountNameTextController.text
+          : null,
       remote: selectedRemote!,
       remotePath: '',
       mountPath: mountPath,
@@ -84,6 +102,29 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
 
     if (context.mounted) {
       Navigator.of(context).pop(mount);
+    }
+  }
+
+  Future<void> editMount(BuildContext context) async {
+    widget.mount!.remote = selectedRemote!;
+    widget.mount!.name = mountNameTextController.text;
+    widget.mount!.allowWrite = !readOnly;
+
+    await SqfliteService.updateMount(widget.mount!);
+
+    widget.editCallback!();
+
+    if (context.mounted) {
+      Navigator.of(context).pop(widget.mount!);
+    }
+  }
+
+  Future<void> deleteMount(BuildContext context) async {
+    SqfliteService.deleteMount(widget.mount!);
+    widget.deleteCallback!();
+
+    if (context.mounted) {
+      Navigator.of(context).pop(widget.mount!);
     }
   }
 
@@ -101,31 +142,70 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
             chooseWindowsPath,
             mountPath,
           )
-        : TextButton(
+        : RoundedButton(
             onPressed: () => selectMountPoint(),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                mountPath.isEmpty
-                    ? 'Selecionar pasta vazia para montar'
-                    : mountPath,
-              ),
-            ),
+            label: mountPath.isEmpty
+                ? 'Selecionar pasta vazia para montar'
+                : mountPath,
           );
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Criando novo mount'),
+        title: Text(
+          widget.mount != null ? 'Editando mount' : 'Criando novo mount',
+        ),
         centerTitle: true,
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
           icon: Icon(Icons.arrow_back_outlined),
         ),
+        actions: widget.mount == null
+            ? []
+            : [
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text('Confirmar deleção'),
+                        content: Text(
+                          'Tem certeza que deseja deletar este mount? Fique tranquilo, sua configuração do rclone e seus arquivos permanecerão intactos.',
+                        ),
+                        actions: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RoundedButton(
+                                label: 'Cancelar',
+                                onPressed: () => Navigator.of(ctx).pop(),
+                              ),
+                              RoundedButton(
+                                label: 'Deletar',
+                                onPressed: () {
+                                  deleteMount(context);
+                                  Navigator.of(ctx).pop();
+                                },
+                                enabledColor: Colors.red,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.delete_forever_rounded,
+                    color: Colors.redAccent,
+                  ),
+                ),
+              ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             selectedRemote == null
                 ? RoundedButton(
@@ -136,9 +216,9 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
                     remote: selectedRemote!,
                     overrideCallback: () => selectRemote(context),
                   ),
-            SizedBox(height: 25),
+            SizedBox(height: 12.0),
             TextFormField(
-              controller: textController,
+              controller: mountNameTextController,
               decoration: InputDecoration(
                 labelText: 'Nome do mount (opcional)',
                 labelStyle: TextStyle(
@@ -160,8 +240,9 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
                 filled: true,
               ),
             ),
-            SizedBox(height: 25),
+            SizedBox(height: 12.0),
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Checkbox(
                   activeColor: Colors.deepPurpleAccent,
@@ -174,7 +255,7 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
                 Text('Apenas leitura'),
               ],
             ),
-            SizedBox(height: 25),
+            SizedBox(height: 12.0),
             mountPathPicker,
           ],
         ),
@@ -183,8 +264,14 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
           ? null
           : RoundedButton(
               externalPadding: const EdgeInsets.all(12.0),
-              label: 'Criar mount',
-              onPressed: () => createMount(context),
+              label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
+              onPressed: () {
+                if (widget.mount != null) {
+                  editMount(context);
+                } else {
+                  createMount(context);
+                }
+              },
             ),
     );
   }

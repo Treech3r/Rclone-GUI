@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../models/mount.dart';
 import '../../../utils/rclone.dart';
 import '../../../widgets/rounded_button.dart';
-import '../../mount_editing/screen.dart';
+import '../../mount_info_editing/screen.dart';
 
 class MountTile extends StatefulWidget {
   final Mount mount;
@@ -120,7 +120,7 @@ class _MountTileState extends State<MountTile> {
                               : () {
                                   Navigator.of(context).push<Mount>(
                                     MaterialPageRoute(
-                                      builder: (_) => MountEditingScreen(
+                                      builder: (_) => MountInfoEditingScreen(
                                         mount: widget.mount,
                                         editCallback: widget.editCallback,
                                         deleteCallback: widget.deleteCallback,

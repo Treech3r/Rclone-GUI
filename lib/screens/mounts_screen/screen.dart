@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/mount.dart';
 import '../../services/sqflite.dart';
-import '../mount_creation/screen.dart';
+import '../mount_info_editing/screen.dart';
 import 'widgets/mount_tile.dart';
 
 class MountsScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _MountsScreenState extends State<MountsScreen> {
 
   Future<void> addMount(BuildContext context) async {
     Mount? mount = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => MountCreationScreen()));
+        .push(MaterialPageRoute(builder: (_) => MountInfoEditingScreen()));
 
     if (mount == null) {
       return;
