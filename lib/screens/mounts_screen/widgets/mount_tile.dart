@@ -43,8 +43,9 @@ class _MountTileState extends State<MountTile> {
     });
 
     await performUnmount(widget.mount);
+    widget.mount.toggleMountStatus();
+
     setState(() {
-      widget.mount.toggleMountStatus();
       isMounting = false;
     });
   }
@@ -59,18 +60,20 @@ class _MountTileState extends State<MountTile> {
           children: [
             Row(
               children: [
-                SvgPicture.asset(
-                  widget.mount.remote.getCommercialLogo,
-                  fit: BoxFit.scaleDown,
-                  height: 50,
-                ),
+                widget.mount.remote == null
+                    ? Icon(Icons.error, color: Colors.red, size: 50)
+                    : SvgPicture.asset(
+                        widget.mount.remote!.getCommercialLogo,
+                        fit: BoxFit.scaleDown,
+                        height: 50,
+                      ),
                 SizedBox(width: 15),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.mount.name == null
-                          ? widget.mount.remote.name
+                      widget.mount.name == null || widget.mount.remote == null
+                          ? widget.mount.remote?.name ?? 'Erro'
                           : widget.mount.name!,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -78,8 +81,8 @@ class _MountTileState extends State<MountTile> {
                       opacity: 0.8,
                       child: Text(
                         widget.mount.mountPath.length == 1
-                            ? '${widget.mount.remote.getCommercialName} (${widget.mount.mountPath}:)'
-                            : widget.mount.remote.getCommercialName,
+                            ? '${widget.mount.remote?.getCommercialName ?? ''} (${widget.mount.mountPath}:)'
+                            : widget.mount.remote?.getCommercialName ?? '',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -113,7 +116,9 @@ class _MountTileState extends State<MountTile> {
                       RoundedButton(
                         label: 'Montar',
                         enabledColor: Colors.green,
-                        onPressed: isMounting ? null : mount,
+                        onPressed: isMounting || widget.mount.remote == null
+                            ? null
+                            : mount,
                       ),
                       RoundedButton(
                         label: 'Editar mount',

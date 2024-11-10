@@ -4,51 +4,77 @@ import '../../utils/rclone.dart';
 import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
 
-class RcloneNotInstalledScreen extends StatefulWidget {
-  const RcloneNotInstalledScreen({super.key});
+class CouldNotStartServerScreen extends StatelessWidget {
+  const CouldNotStartServerScreen({super.key});
 
-  @override
-  State<RcloneNotInstalledScreen> createState() =>
-      _RcloneNotInstalledScreenState();
-}
-
-class _RcloneNotInstalledScreenState extends State<RcloneNotInstalledScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.redAccent.withOpacity(0.2),
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Não foi possível localizar o rclone em seu sistema.'),
-            Text('Certifique-se de que o adicionou às variáveis de ambiente.'),
-            SizedBox(height: 20),
-            TryAgainButton(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Não foi possível iniciar o servidor rclone.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(color: Colors.red),
+              ),
+              SizedBox(height: 50),
+              Text(
+                'Certifique-se de que o rclone está instalado e adicionado às variáveis de ambiente.',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              TryAgainButton(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class TryAgainButton extends StatelessWidget {
+class TryAgainButton extends StatefulWidget {
   const TryAgainButton({super.key});
+
+  @override
+  State<TryAgainButton> createState() => _TryAgainButtonState();
+}
+
+class _TryAgainButtonState extends State<TryAgainButton> {
+  bool isTrying = false;
+
+  Future<void> tryToStartServer(BuildContext context) async {
+    setState(() {
+      isTrying = true;
+    });
+
+    final serverStarted = await startRcloneServer();
+
+    if (context.mounted) {
+      if (!serverStarted) {
+        setState(() {
+          isTrying = false;
+        });
+        showRcloneNotFoundModalSheet(context);
+      } else {
+        navigateToHomePage(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return RoundedButton(
-      label: 'Verificar novamente',
-      onPressed: () async {
-        final rcloneInstalled = await isRcloneInstalled();
-
-        if (context.mounted) {
-          if (!rcloneInstalled) {
-            showRcloneNotFoundModalSheet(context);
-          } else {
-            navigateToHomePage(context);
-          }
-        }
-      },
+      label: 'Tentar novamente',
+      onPressed: isTrying ? null : () => tryToStartServer(context),
     );
   }
 
@@ -65,7 +91,7 @@ class TryAgainButton extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text('Não foi possível localizar'),
+              child: Text('Não foi possível iniciar o servidor'),
             ),
           ],
         ),

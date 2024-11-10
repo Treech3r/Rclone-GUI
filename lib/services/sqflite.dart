@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../models/mount.dart';
+import '../models/remote.dart';
 import '../utils/rclone.dart';
 
 class SqfliteService {
@@ -54,7 +55,10 @@ class SqfliteService {
 
     // TODO: deal with the case where no remote is found by name
     return result.map((r) {
-      var remote = remotes.firstWhere((a) => a.name == r['remote']);
+      Remote? remote;
+      try {
+        remote = remotes.firstWhere((a) => a.name == r['remote']);
+      } catch (_) {}
       return Mount.fromJson({...r, 'remote': remote});
     }).toList();
   }

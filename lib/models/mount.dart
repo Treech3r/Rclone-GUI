@@ -5,7 +5,7 @@ import 'remote.dart';
 class Mount {
   final int id;
   String? name;
-  Remote remote;
+  Remote? remote;
   String remotePath;
   String mountPath;
   bool allowWrite;
@@ -35,7 +35,7 @@ class Mount {
     return {
       'id': id,
       'name': name,
-      'remote': remote.name,
+      'remote': remote?.name ?? '',
       'remotePath': remotePath,
       'mountPath': mountPath,
       'allowWrite': allowWrite ? 1 : 0,

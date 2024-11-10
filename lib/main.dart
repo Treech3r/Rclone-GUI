@@ -10,13 +10,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SqfliteService.initialize();
 
-  var rcloneInstalled = await isRcloneInstalled();
+  final serverStarted = await startRcloneServer();
 
-  if (rcloneInstalled) {
-    await startRcloneServer();
-  }
-
-  runApp(MyApp(rcloneInstalled));
+  runApp(MyApp(serverStarted));
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +33,8 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: rcloneInstalled ? const MountsScreen() : RcloneNotInstalledScreen(),
+      home:
+          rcloneInstalled ? const MountsScreen() : CouldNotStartServerScreen(),
     );
   }
 }
