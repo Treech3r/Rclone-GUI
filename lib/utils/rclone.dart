@@ -10,7 +10,7 @@ const kBaseUrl = "http://localhost:8965";
 
 // This shell should be global. Otherwise, it will be destroyed by garbage
 // collector, effectively taking down the server.
-var serverShell = Shell();
+var serverShell = Shell(throwOnError: false);
 
 Future<bool> startRcloneServer() async {
   try {
