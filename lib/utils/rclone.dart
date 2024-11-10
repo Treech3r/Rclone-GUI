@@ -25,7 +25,6 @@ Future<bool> startRcloneServer() async {
 
   int attempts = 0;
   while (attempts < 40 && !await _isServerRunning()) {
-    print('Attempt #${attempts + 1}');
     await Future.delayed(Duration(milliseconds: 50));
     attempts++;
   }
