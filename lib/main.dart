@@ -6,10 +6,17 @@ import 'services/sqflite.dart';
 import 'utils/rclone.dart';
 
 void main() async {
+  // Necessary because of sqflite
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeRcloneServer();
   await SqfliteService.initialize();
-  runApp(MyApp(await isRcloneInstalled()));
+
+  var rcloneInstalled = await isRcloneInstalled();
+
+  if (rcloneInstalled) {
+    await startRcloneServer();
+  }
+
+  runApp(MyApp(rcloneInstalled));
 }
 
 class MyApp extends StatelessWidget {

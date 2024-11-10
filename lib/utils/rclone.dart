@@ -1,12 +1,17 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:process_run/process_run.dart';
 
 import '../models/mount.dart';
 import '../models/remote.dart';
 import 'shell.dart';
 
 const kBaseUrl = "http://localhost:8965";
+
+// This shell should be global. Otherwise, it will be destroyed by garbage
+// collector, effectively taking down the server.
+var serverShell = Shell();
 
 Future<bool> isRcloneInstalled() async {
   try {
@@ -18,14 +23,14 @@ Future<bool> isRcloneInstalled() async {
   }
 }
 
-Future<void> initializeRcloneServer() async {
+Future<void> startRcloneServer() async {
   try {
     if (await _isRcServerAlreadyRunning()) {
       return;
     }
   } catch (_) {}
 
-  await runShellCommand('rclone rcd --rc-addr=localhost:8965 --rc-no-auth');
+  await serverShell.run('rclone rcd --rc-addr=localhost:8965 --rc-no-auth');
 
   int attempts = 0;
   while (attempts < 3 && !await _isRcServerAlreadyRunning()) {
