@@ -49,7 +49,7 @@ class SqfliteService {
   }
 
   static Future<List<Mount>> getAllMounts() async {
-    var remotes = await getRcloneDriveRemotes();
+    var remotes = await getAllRemotes();
     var result = await _db.query('Mount');
 
     // TODO: deal with the case where no remote is found by name

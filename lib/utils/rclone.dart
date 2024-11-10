@@ -35,43 +35,25 @@ Future<void> initializeRcloneServer() async {
   }
 }
 
-Future<bool> _isRcServerAlreadyRunning() async {
-  try {
-    var response = await makePostRequest('/rc/noop?potato=1&sausage=2');
-    return response['potato'] == "1" && response['sausage'] == "2";
-  } catch (_) {
-    return false;
-  }
-}
+Future<List<Remote>> getAllRemotes() async {
+  List<String> allRemotes = await _getAllRemotes();
+  Map<String, String> remoteTypes = {};
 
-Future<Map<String, dynamic>> makePostRequest(String path,
-    {dynamic payload}) async {
-  var response = await http.post(
-    Uri.parse('$kBaseUrl$path'),
-    body: jsonEncode(payload),
+  for (String remote in allRemotes) {
+    var response = await _makePostRequest('/config/get?name=$remote');
+    remoteTypes[remote] = response['type'];
+  }
+
+  // TODO: remove this filter to support all remotes
+  remoteTypes.removeWhere((key, value) => value != 'drive');
+
+  List<Remote> remotes = [];
+
+  remoteTypes.forEach(
+    (key, value) => remotes.add(Remote(name: key, type: value)),
   );
 
-  if (response.statusCode != 200) {
-    throw Error();
-  }
-
-  return jsonDecode(response.body);
-}
-
-Future<List<Remote>> getRcloneDriveRemotes() async {
-  var result = await runShellCommand('rclone listremotes --json --type drive');
-
-  if ((result.stderr as String).isNotEmpty) {
-    return [];
-  }
-
-  var rawRemotes = (result.stdout as String);
-
-  List<dynamic> remotes = jsonDecode(rawRemotes);
-
-  var remotesMap = remotes.map(Remote.fromJson).toList();
-
-  return remotesMap;
+  return remotes;
 }
 
 Future<void> performMount(Mount mount) async {
@@ -87,4 +69,33 @@ Future<void> performMount(Mount mount) async {
   }
 
   runShellCommand(mountCommand);
+}
+
+// TODO: check how rclone returns the response in case there are no remotes
+Future<List<String>> _getAllRemotes() async {
+  var response = await _makePostRequest('/config/listremotes');
+  return List<String>.from(response['remotes']);
+}
+
+Future<bool> _isRcServerAlreadyRunning() async {
+  try {
+    var response = await _makePostRequest('/rc/noop?potato=1&sausage=2');
+    return response['potato'] == "1" && response['sausage'] == "2";
+  } catch (_) {
+    return false;
+  }
+}
+
+Future<Map<String, dynamic>> _makePostRequest(String path,
+    {dynamic payload}) async {
+  var response = await http.post(
+    Uri.parse('$kBaseUrl$path'),
+    body: jsonEncode(payload),
+  );
+
+  if (response.statusCode != 200) {
+    throw Error();
+  }
+
+  return jsonDecode(response.body);
 }

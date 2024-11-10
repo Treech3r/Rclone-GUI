@@ -24,7 +24,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
         ),
       ),
       body: FutureBuilder(
-        future: getRcloneDriveRemotes(),
+        future: getAllRemotes(),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: Text('Lendo configuração do rclone...'));
