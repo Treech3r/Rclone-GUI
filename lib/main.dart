@@ -7,6 +7,7 @@ import 'utils/rclone.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeRcloneServer();
   await SqfliteService.initialize();
   runApp(MyApp(await isRcloneInstalled()));
 }
