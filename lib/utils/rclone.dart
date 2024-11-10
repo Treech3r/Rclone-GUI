@@ -65,6 +65,13 @@ Future<void> performMount(Mount mount) async {
   });
 }
 
+Future<void> performUnmount(Mount mount) async {
+  await _makePostRequest(
+    '/mount/unmount',
+    queryParameters: {'mountPoint': mount.mountPath},
+  );
+}
+
 // TODO: check how rclone returns the response in case there are no remotes
 Future<List<String>> _getAllRemotes() async {
   var response = await _makePostRequest('/config/listremotes');

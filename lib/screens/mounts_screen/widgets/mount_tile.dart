@@ -37,6 +37,18 @@ class _MountTileState extends State<MountTile> {
     });
   }
 
+  Future<void> unMount() async {
+    setState(() {
+      isMounting = true;
+    });
+
+    await performUnmount(widget.mount);
+    setState(() {
+      isMounted = false;
+      isMounting = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -89,7 +101,7 @@ class _MountTileState extends State<MountTile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: FilledButton(
-                          onPressed: isMounting ? null : mount,
+                          onPressed: isMounting ? null : unMount,
                           style: ButtonStyle(
                             backgroundColor:
                                 WidgetStateProperty.resolveWith<Color>(
