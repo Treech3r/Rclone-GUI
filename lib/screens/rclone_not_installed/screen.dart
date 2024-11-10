@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rclone_gui/screens/mounts_screen/screen.dart';
 
 import '../../utils/rclone.dart';
 import '../../widgets/rounded_button.dart';
-import '../remote_selection/screen.dart';
 
 class CouldNotStartServerScreen extends StatelessWidget {
   const CouldNotStartServerScreen({super.key});
@@ -100,7 +100,7 @@ class _TryAgainButtonState extends State<TryAgainButton> {
   }
 
   void navigateToHomePage(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => RemoteSelectionScreen()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (_) => MountsScreen()));
   }
 }
