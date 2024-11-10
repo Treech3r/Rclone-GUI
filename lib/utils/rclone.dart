@@ -39,19 +39,25 @@ Future<void> initializeRcloneServer() async {
 
 Future<bool> _isRcServerAlreadyRunning() async {
   try {
-    var response = await http.post(
-      Uri.parse('$kBaseUrl/rc/noop?potato=1&sausage=2'),
-    );
-
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse['potato'] == "1" && jsonResponse['sausage'] == "2";
-    }
+    var response = await makePostRequest('/rc/noop?potato=1&sausage=2');
+    return response['potato'] == "1" && response['sausage'] == "2";
   } catch (_) {
     return false;
   }
+}
 
-  return false;
+Future<Map<String, dynamic>> makePostRequest(String path,
+    {dynamic payload}) async {
+  var response = await http.post(
+    Uri.parse('$kBaseUrl$path'),
+    body: jsonEncode(payload),
+  );
+
+  if (response.statusCode != 200) {
+    throw Error();
+  }
+
+  return jsonDecode(response.body);
 }
 
 Future<List<Remote>> getRcloneDriveRemotes() async {
