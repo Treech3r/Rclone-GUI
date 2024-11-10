@@ -31,16 +31,8 @@ class _MountTileState extends State<MountTile> {
     });
 
     await performMount(widget.mount);
-
-    await Future.delayed(Duration(seconds: 2));
-
     setState(() {
       isMounted = true;
-    });
-
-    await Future.delayed(Duration(seconds: 3));
-
-    setState(() {
       isMounting = false;
     });
   }
@@ -65,9 +57,9 @@ class _MountTileState extends State<MountTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.mount.name.isEmpty
+                      widget.mount.name == null
                           ? widget.mount.remote.name
-                          : widget.mount.name,
+                          : widget.mount.name!,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Opacity(

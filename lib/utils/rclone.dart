@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -57,18 +56,13 @@ Future<List<Remote>> getAllRemotes() async {
 }
 
 Future<void> performMount(Mount mount) async {
-  var mountCommand =
-      'rclone mount "${mount.remote.name}:" "${mount.mountPath}" --vfs-cache-mode=minimal';
-
-  if (!mount.allowWrite) {
-    mountCommand = '$mountCommand --read-only';
-  }
-
-  if (!Platform.isWindows) {
-    mountCommand = '$mountCommand --daemon';
-  }
-
-  runShellCommand(mountCommand);
+  var mountName = mount.name ?? '${mount.remote.name}:';
+  await _makePostRequest('/mount/mount', queryParameters: {
+    'fs': '${mount.remote.name}:',
+    'mountPoint': mount.mountPath,
+    'mountOpt': '{"DeviceName": "$mountName", "VolumeName": "$mountName"}',
+    'vfsOpt': '{"CacheMode": 1, "ReadOnly": ${!mount.allowWrite}}'
+  });
 }
 
 // TODO: check how rclone returns the response in case there are no remotes
@@ -86,12 +80,14 @@ Future<bool> _isRcServerAlreadyRunning() async {
   }
 }
 
-Future<Map<String, dynamic>> _makePostRequest(String path,
-    {dynamic payload}) async {
-  var response = await http.post(
-    Uri.parse('$kBaseUrl$path'),
-    body: jsonEncode(payload),
-  );
+Future<Map<String, dynamic>> _makePostRequest(
+  String path, {
+  Map<String, dynamic>? queryParameters,
+}) async {
+  var uri =
+      Uri.parse('$kBaseUrl$path').replace(queryParameters: queryParameters);
+
+  var response = await http.post(uri);
 
   if (response.statusCode != 200) {
     throw Error();

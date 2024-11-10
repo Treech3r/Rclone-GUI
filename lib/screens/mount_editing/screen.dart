@@ -30,7 +30,9 @@ class _MountEditingScreenState extends State<MountEditingScreen> {
   @override
   void initState() {
     mount = widget.mount;
-    textController.text = mount.name;
+    if (mount.name != null) {
+      textController.text = mount.name!;
+    }
     readOnly = !mount.allowWrite;
     selectedRemote = mount.remote;
     super.initState();

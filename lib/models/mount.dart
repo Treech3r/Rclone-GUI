@@ -2,7 +2,7 @@ import 'remote.dart';
 
 class Mount {
   final int id;
-  String name;
+  String? name;
   Remote remote;
   String remotePath;
   String mountPath;

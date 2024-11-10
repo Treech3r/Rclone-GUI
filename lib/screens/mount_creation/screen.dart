@@ -72,7 +72,7 @@ class _MountCreationScreenState extends State<MountCreationScreen> {
   Future<void> createMount(BuildContext context) async {
     var mount = Mount(
       id: 0,
-      name: textController.text,
+      name: textController.text.isNotEmpty ? textController.text : null,
       remote: selectedRemote!,
       remotePath: '',
       mountPath: mountPath,
