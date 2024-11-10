@@ -23,7 +23,6 @@ class MountTile extends StatefulWidget {
 }
 
 class _MountTileState extends State<MountTile> {
-  bool isMounted = false;
   bool isMounting = false;
 
   Future<void> mount() async {
@@ -33,7 +32,7 @@ class _MountTileState extends State<MountTile> {
 
     await performMount(widget.mount);
     setState(() {
-      isMounted = true;
+      widget.mount.toggleMountStatus();
       isMounting = false;
     });
   }
@@ -45,7 +44,7 @@ class _MountTileState extends State<MountTile> {
 
     await performUnmount(widget.mount);
     setState(() {
-      isMounted = false;
+      widget.mount.toggleMountStatus();
       isMounting = false;
     });
   }
@@ -97,39 +96,44 @@ class _MountTileState extends State<MountTile> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: isMounted
-                    ? [
-                        RoundedButton(
-                          label: 'Desmontar',
-                          onPressed: isMounting ? null : unMount,
-                          enabledColor: Colors.red,
-                        )
-                      ]
-                    : [
-                        RoundedButton(
-                          label: 'Montar',
-                          enabledColor: Colors.green,
-                          onPressed: isMounting ? null : mount,
-                        ),
-                        RoundedButton(
-                          label: 'Editar mount',
-                          onPressed: isMounting
-                              ? null
-                              : () {
-                                  Navigator.of(context).push<Mount>(
-                                    MaterialPageRoute(
-                                      builder: (_) => MountInfoEditingScreen(
-                                        mount: widget.mount,
-                                        editCallback: widget.editCallback,
-                                        deleteCallback: widget.deleteCallback,
-                                      ),
+              child: ValueListenableBuilder(
+                valueListenable: widget.mount.isMounted,
+                builder: (ctx, isMounted, _) {
+                  if (isMounted) {
+                    return RoundedButton(
+                      label: 'Desmontar',
+                      onPressed: isMounting ? null : unMount,
+                      enabledColor: Colors.red,
+                    );
+                  }
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      RoundedButton(
+                        label: 'Montar',
+                        enabledColor: Colors.green,
+                        onPressed: isMounting ? null : mount,
+                      ),
+                      RoundedButton(
+                        label: 'Editar mount',
+                        onPressed: isMounting
+                            ? null
+                            : () {
+                                Navigator.of(context).push<Mount>(
+                                  MaterialPageRoute(
+                                    builder: (_) => MountInfoEditingScreen(
+                                      mount: widget.mount,
+                                      editCallback: widget.editCallback,
+                                      deleteCallback: widget.deleteCallback,
                                     ),
-                                  );
-                                },
-                        ),
-                      ],
+                                  ),
+                                );
+                              },
+                      )
+                    ],
+                  );
+                },
               ),
             ),
           ],

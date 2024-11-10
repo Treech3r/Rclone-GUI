@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'remote.dart';
 
 class Mount {
@@ -7,6 +9,7 @@ class Mount {
   String remotePath;
   String mountPath;
   bool allowWrite;
+  ValueNotifier<bool> isMounted = ValueNotifier(false);
 
   Mount({
     required this.id,
@@ -37,5 +40,9 @@ class Mount {
       'mountPath': mountPath,
       'allowWrite': allowWrite ? 1 : 0,
     };
+  }
+
+  void toggleMountStatus() {
+    isMounted.value = !isMounted.value;
   }
 }
