@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "rclone_gui" "\0"
+            VALUE "FileDescription", "Rclone GUI by Treecher" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "rclone_gui" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "InternalName", "Rclone GUI by Treecher" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024. All rights reserved." "\0"
             VALUE "OriginalFilename", "rclone_gui.exe" "\0"
-            VALUE "ProductName", "rclone_gui" "\0"
+            VALUE "ProductName", "Rclone GUI by Treecher" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
