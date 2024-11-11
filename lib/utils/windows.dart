@@ -1,10 +1,16 @@
 import 'shell.dart';
 
 Future<List<String>> getAvailableDriveLetters() async {
-  const powerShellCommand =
-      "'ABCDEFGHIJKLMNOPQRSTUVWXYZ' -split '' | Where-Object { \$_ -notin ([System.IO.DriveInfo]::GetDrives().Name).Substring(0,1) }";
+  const powershellCommand = 'wmic logicaldisk get caption';
 
-  var result = (await runShellCommand(powerShellCommand)).stdout as String;
+  var lettersCurrentlyInUse =
+      (await runShellCommand(powershellCommand)).stdout as String;
 
-  return result.split('\n').where((letter) => letter.isNotEmpty).toList();
+  lettersCurrentlyInUse = lettersCurrentlyInUse.replaceAll(':', '');
+  lettersCurrentlyInUse.replaceFirst('Caption', '');
+
+  return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      .split('')
+      .where((letter) => !lettersCurrentlyInUse.contains(letter))
+      .toList();
 }
