@@ -2,7 +2,7 @@ import 'shell.dart';
 
 Future<List<String>> getAvailableDriveLetters() async {
   const powershellCommand =
-      'Get-PSDrive -PSProvider FileSystem | ForEach-Object { \$_.Name }';
+      'wmic logicaldisk get caption | findstr /r "^[A-Z]"';
 
   var lettersCurrentlyInUse =
       (await runShellCommand(powershellCommand)).stdout as String;
