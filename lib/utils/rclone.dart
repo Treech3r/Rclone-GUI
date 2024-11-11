@@ -89,8 +89,9 @@ Future<List<String>> _getAllRemotes() async {
 void _startRcloneServer() async {
   if (serverShell != null) {
     serverShell!.kill();
-    serverShell = Shell(throwOnError: false);
   }
+
+  serverShell = Shell(throwOnError: false);
 
   String rcloneBin = 'rclone';
 
