@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:process_run/process_run.dart';
@@ -10,7 +11,7 @@ const kBaseUrl = "http://localhost:8965";
 
 // This shell should be global. Otherwise, it will be destroyed by garbage
 // collector, effectively taking down the server.
-var serverShell = Shell(throwOnError: false);
+Shell? serverShell;
 
 Future<bool> startRcloneServer() async {
   try {
@@ -86,7 +87,20 @@ Future<List<String>> _getAllRemotes() async {
 }
 
 void _startRcloneServer() async {
-  serverShell.run('rclone rcd --rc-addr=localhost:8965 --rc-no-auth');
+  if (serverShell != null) {
+    serverShell!.kill();
+    serverShell = Shell(throwOnError: false);
+  }
+
+  String rcloneBin = 'rclone';
+
+  // On macOS, the PATH variable might not work for GUI apps.
+  // Use the full path to rclone as a workaround.
+  if (Platform.isMacOS) {
+    rcloneBin = '/usr/local/bin/rclone';
+  }
+
+  serverShell!.run('$rcloneBin rcd --rc-addr=localhost:8965 --rc-no-auth');
 }
 
 Future<bool> _isServerRunning() async {

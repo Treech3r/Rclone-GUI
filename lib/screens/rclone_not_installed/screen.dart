@@ -1,14 +1,29 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:rclone_gui/screens/mounts_screen/screen.dart';
 
 import '../../utils/rclone.dart';
 import '../../widgets/rounded_button.dart';
+import '../mounts_screen/screen.dart';
 
 class CouldNotStartServerScreen extends StatelessWidget {
-  const CouldNotStartServerScreen({super.key});
+  CouldNotStartServerScreen({super.key});
+
+  late final String message;
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isWindows) {
+      message =
+          'Para sistemas Windows, certifique-se de adicionar o rclone à variável de ambiente PATH. Após fazer isso, tente novamente.';
+    } else if (Platform.isMacOS) {
+      message =
+          'Para sistemas macOS, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
+    } else {
+      message =
+          'Para sistemas Linux, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
+    }
+
     return Scaffold(
       backgroundColor: Colors.redAccent.withOpacity(0.2),
       body: Center(
@@ -28,7 +43,7 @@ class CouldNotStartServerScreen extends StatelessWidget {
               ),
               SizedBox(height: 50),
               Text(
-                'Certifique-se de que o rclone está instalado e adicionado às variáveis de ambiente.',
+                message,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
