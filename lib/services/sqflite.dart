@@ -12,6 +12,10 @@ class SqfliteService {
   static Future<void> initialize() async {
     sqfliteFfiInit();
 
+    // This line might seem redundant but will cause the application not to
+    // launch on Windows if deleted.
+    var databaseFactory = databaseFactoryFfi;
+
     _db = await databaseFactory.openDatabase(
       'rclone_gui.db',
       options: OpenDatabaseOptions(
