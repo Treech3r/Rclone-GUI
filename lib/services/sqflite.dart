@@ -1,4 +1,4 @@
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/mount.dart';
 import '../models/remote.dart';
@@ -10,10 +10,14 @@ class SqfliteService {
   static const kCurrentDatabaseVersion = 1;
 
   static Future<void> initialize() async {
-    _db = await openDatabase(
+    sqfliteFfiInit();
+
+    _db = await databaseFactory.openDatabase(
       'rclone_gui.db',
-      version: kCurrentDatabaseVersion,
-      onCreate: _createDatabase,
+      options: OpenDatabaseOptions(
+        version: kCurrentDatabaseVersion,
+        onCreate: _createDatabase,
+      ),
     );
   }
 
