@@ -164,46 +164,6 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           onPressed: Navigator.of(context).pop,
           icon: Icon(Icons.arrow_back_outlined),
         ),
-        actions: widget.mount == null
-            ? []
-            : [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: Text('Confirmar deleção'),
-                        content: Text(
-                          'Tem certeza que deseja deletar este mount? Fique tranquilo, sua configuração do rclone e seus arquivos permanecerão intactos.',
-                        ),
-                        actions: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RoundedButton(
-                                label: 'Cancelar',
-                                onPressed: () => Navigator.of(ctx).pop(),
-                              ),
-                              RoundedButton(
-                                label: 'Deletar',
-                                onPressed: () {
-                                  deleteMount(context);
-                                  Navigator.of(ctx).pop();
-                                },
-                                enabledColor: Colors.red,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.delete_forever_rounded,
-                    color: Colors.redAccent,
-                  ),
-                ),
-              ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
@@ -266,17 +226,58 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       ),
       bottomSheet: selectedRemote == null || mountPath.isEmpty
           ? null
-          : RoundedButton(
-              enabledColor: Colors.purpleAccent,
-              externalPadding: const EdgeInsets.all(12.0),
-              label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
-              onPressed: () {
-                if (widget.mount != null) {
-                  editMount(context);
-                } else {
-                  createMount(context);
-                }
-              },
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                RoundedButton(
+                  enabledColor: Colors.purpleAccent,
+                  externalPadding: const EdgeInsets.all(12.0),
+                  label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
+                  onPressed: () {
+                    if (widget.mount != null) {
+                      editMount(context);
+                    } else {
+                      createMount(context);
+                    }
+                  },
+                ),
+                if (widget.mount != null)
+                  RoundedButton(
+                    enabledColor: Colors.red,
+                    externalPadding: const EdgeInsets.all(12.0),
+                    label: 'Deletar mount',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text('Confirmar deleção'),
+                          content: Text(
+                            'Tem certeza que deseja deletar este mount? Fique tranquilo, sua configuração do rclone e seus arquivos permanecerão intactos.',
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RoundedButton(
+                                  label: 'Cancelar',
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                ),
+                                RoundedButton(
+                                  label: 'Deletar',
+                                  onPressed: () {
+                                    deleteMount(context);
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  enabledColor: Colors.red,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+              ],
             ),
     );
   }
