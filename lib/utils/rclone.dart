@@ -47,6 +47,12 @@ Future<List<Remote>> getAllRemotes() async {
   // TODO: remove this filter to support all remotes
   remotes.removeWhere((remote) => remote.type != 'drive');
 
+  Set<String> mountedRemotes = (await _getMountedRemotes()).toSet();
+
+  for (var remote in remotes) {
+    remote.mounted = mountedRemotes.contains(remote.name);
+  }
+
   return remotes;
 }
 
@@ -98,6 +104,18 @@ Future<List<String>> _getAllRemotes() async {
   }
 
   return List<String>.from(response['remotes']);
+}
+
+Future<List<String>> _getMountedRemotes() async {
+  var response = await _makePostRequest('/mount/listmounts');
+
+  if (response['mountPoints'] == null) {
+    return [];
+  }
+
+  return (response['mountPoints'] as List<dynamic>)
+      .map((mount) => (mount['Fs'] as String).replaceAll(':', ''))
+      .toList();
 }
 
 void _startRcloneServer() async {

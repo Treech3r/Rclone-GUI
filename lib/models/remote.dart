@@ -1,8 +1,9 @@
 class Remote {
   final String name;
   final String type;
+  bool mounted;
 
-  Remote({required this.name, required this.type});
+  Remote({required this.name, required this.type, this.mounted = false});
 
   factory Remote.fromJson(dynamic json) {
     return Remote(
@@ -27,5 +28,10 @@ class Remote {
       default:
         return '';
     }
+  }
+
+  @override
+  String toString() {
+    return 'Remote($name:, type: $type, mounted: $mounted)';
   }
 }

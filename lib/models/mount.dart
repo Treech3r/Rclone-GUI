@@ -18,7 +18,9 @@ class Mount {
     required this.remotePath,
     required this.mountPath,
     required this.allowWrite,
-  });
+  }) {
+    isMounted.value = remote?.mounted ?? false;
+  }
 
   factory Mount.fromJson(Map<String, dynamic> json) {
     return Mount(
