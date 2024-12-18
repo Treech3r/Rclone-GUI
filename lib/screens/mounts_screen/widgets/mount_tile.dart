@@ -115,7 +115,7 @@ class _MountTileState extends State<MountTile> {
                     children: [
                       RoundedButton(
                         label: 'Montar',
-                        enabledColor: Colors.green,
+                        enabledColor: Colors.purpleAccent,
                         onPressed: isMounting || widget.mount.remote == null
                             ? null
                             : mount,

@@ -267,6 +267,7 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       bottomSheet: selectedRemote == null || mountPath.isEmpty
           ? null
           : RoundedButton(
+              enabledColor: Colors.purpleAccent,
               externalPadding: const EdgeInsets.all(12.0),
               label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
               onPressed: () {

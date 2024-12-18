@@ -74,8 +74,8 @@ class _MountsScreenState extends State<MountsScreen> {
               shape: CircleBorder(),
               tooltip: 'Criar novo mount',
               onPressed: () => addMount(context),
-              backgroundColor: Theme.of(context).colorScheme.tertiary,
-              child: Icon(Icons.add),
+              backgroundColor: Colors.deepPurpleAccent,
+              child: Icon(Icons.add, color: Colors.white),
             ),
       body: bodyContent,
     );
