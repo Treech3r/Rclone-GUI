@@ -34,25 +34,39 @@ Future<bool> startRcloneServer() async {
 }
 
 Future<List<Remote>> getAllRemotes() async {
-  List<String> allRemotes = await _getAllRemotes();
+  List<String> remotesNames = await _getAllRemotes();
 
-  if (allRemotes.isEmpty) {
+  if (remotesNames.isEmpty) {
     return [];
   }
 
-  Map<String, String> remoteTypes = {};
-
-  for (String remote in allRemotes) {
-    var response = await _makePostRequest('/config/get?name=$remote');
-    remoteTypes[remote] = response['type'];
-  }
+  Map<String, String> remotesNamesAndTypes =
+      await _fetchRemoteTypes(remotesNames);
+  List<Remote> remotes = await _buildRemotes(remotesNamesAndTypes);
 
   // TODO: remove this filter to support all remotes
-  remoteTypes.removeWhere((key, value) => value != 'drive');
+  remotes.removeWhere((remote) => remote.type != 'drive');
 
+  return remotes;
+}
+
+Future<Map<String, String>> _fetchRemoteTypes(List<String> remotesNames) async {
+  Map<String, String> remotesWithType = {};
+
+  for (String remote in remotesNames) {
+    var response = await _makePostRequest('/config/get?name=$remote');
+    remotesWithType[remote] = response['type'];
+  }
+
+  return remotesWithType;
+}
+
+Future<List<Remote>> _buildRemotes(
+  Map<String, String> remotesWithNameAndType,
+) async {
   List<Remote> remotes = [];
 
-  remoteTypes.forEach(
+  remotesWithNameAndType.forEach(
     (key, value) => remotes.add(Remote(name: key, type: value)),
   );
 
