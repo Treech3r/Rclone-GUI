@@ -107,7 +107,11 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
 
   Future<void> editMount(BuildContext context) async {
     widget.mount!.remote = selectedRemote!;
-    widget.mount!.name = mountNameTextController.text;
+    if (mountNameTextController.text.trim().isEmpty) {
+      widget.mount?.name = null;
+    } else {
+      widget.mount?.name = mountNameTextController.text;
+    }
     widget.mount!.allowWrite = !readOnly;
 
     await SqfliteService.updateMount(widget.mount!);
