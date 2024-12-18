@@ -72,9 +72,7 @@ class _MountTileState extends State<MountTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.mount.name == null || widget.mount.remote == null
-                          ? widget.mount.remote?.name ?? 'Erro'
-                          : widget.mount.name!,
+                      widget.mount.name ?? widget.mount.remote?.name ?? 'Erro',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Opacity(
@@ -89,7 +87,9 @@ class _MountTileState extends State<MountTile> {
                     Opacity(
                       opacity: 0.8,
                       child: Text(
-                        'Monta em: ${widget.mount.mountPath}',
+                        widget.mount.mountPath.length == 1
+                            ? '${widget.mount.mountPath}:'
+                            : widget.mount.mountPath,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
