@@ -14,20 +14,20 @@ const kBaseUrl = "http://localhost:8965";
 Shell? serverShell;
 
 Future<bool> startRcloneServer() async {
-  try {
-    if (await _isServerRunning()) {
-      return true;
-    }
-  } catch (_) {}
+  if (await _isServerRunning()) {
+    return true;
+  }
 
   _startRcloneServer();
 
-  await Future.delayed(Duration(milliseconds: 500));
-
   int attempts = 0;
-  while (attempts < 40 && !await _isServerRunning()) {
-    await Future.delayed(Duration(milliseconds: 50));
+  while (attempts < 40 && !(await _isServerRunning())) {
+    await Future.delayed(Duration(milliseconds: 300));
     attempts++;
+  }
+
+  if (await _isServerRunning()) {
+    return true;
   }
 
   return false;
