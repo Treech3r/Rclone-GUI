@@ -83,7 +83,7 @@ Future<void> performMount(Mount mount) async {
   var mountName = mount.name ?? '${mount.remote!.name}:';
   await _makePostRequest('/mount/mount', queryParameters: {
     'fs': '${mount.remote!.name}:',
-    'mountPoint': mount.mountPath,
+    'mountPoint': _getMountPoint(mount),
     'mountOpt': '{"DeviceName": "$mountName", "VolumeName": "$mountName"}',
     'vfsOpt': '{"CacheMode": 1, "ReadOnly": ${!mount.allowWrite}}'
   });
@@ -92,7 +92,7 @@ Future<void> performMount(Mount mount) async {
 Future<void> performUnmount(Mount mount) async {
   await _makePostRequest(
     '/mount/unmount',
-    queryParameters: {'mountPoint': mount.mountPath},
+    queryParameters: {'mountPoint': _getMountPoint(mount)},
   );
 }
 
@@ -178,4 +178,9 @@ Future<Map<String, dynamic>> _makePostRequest(
   }
 
   return jsonDecode(response.body);
+}
+
+String _getMountPoint(Mount mount) {
+  var mountPath = mount.mountPath;
+  return mountPath.length == 1 ? '$mountPath:' : mountPath;
 }
