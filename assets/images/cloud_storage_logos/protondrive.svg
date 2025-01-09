@@ -1,0 +1,19 @@
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" fill="none" version="1.1" id="svg428" sodipodi:docname="ProtonMail_7.svg" inkscape:version="1.2.2 (732a01da63, 2022-12-09)" viewBox="25 30 190.72 156.53">
+  <title id="title667">Proton Mail</title>
+  <sodipodi:namedview id="namedview430" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" showgrid="false" inkscape:zoom="0.8" inkscape:cx="500" inkscape:cy="108.75" inkscape:window-width="1366" inkscape:window-height="705" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg428"/>
+  <g id="g468" transform="matrix(1.7992414,0,0,1.7992414,25.00041,-14.981038)">
+    <path d="m 74.8827,46.7999 -41.5196,0.2327 c -1.7877,0.0111 -3.5307,-0.532 -4.9944,-1.5627 L 19.1173,38.9532 C 17.676,37.9336 15.9441,37.3906 14.1788,37.3906 H 0 V 101.128 C 0,107.135 4.90503,112 10.9609,112 H 83.4637 V 55.256 c 0,-4.688 -3.8436,-8.4894 -8.581,-8.4561 z" fill="url(#paint0_radial_10975_186729)" id="path410" style="fill:url(#paint0_radial_10975_186729)"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="m 49.9553,33.7554 h 45.0838 c 6.0559,0 10.9609,4.8654 10.9609,10.8722 v 56.4894 c 0,6.007 -4.905,10.872 -10.9609,10.872 H 83.4637 V 55.256 c 0,-4.688 -3.8436,-8.4894 -8.581,-8.4561 l -41.5196,0.2327 c -1.7877,0.0111 -3.5307,-0.532 -4.9944,-1.5627 L 19.1173,38.9532 C 17.676,37.9336 15.9441,37.3906 14.1788,37.3906 H 0 V 35.8722 C 0,29.8654 4.90503,25 10.9609,25 h 20.5698 c 2.0782,0 4.1006,0.6539 5.7654,1.873 l 6.8827,5.0094 c 1.6759,1.2191 3.6983,1.873 5.7765,1.873 z" fill="url(#paint1_linear_10975_186729)" id="path412" style="fill:url(#paint1_linear_10975_186729)"/>
+  </g>
+  <defs id="defs426">
+    <radialGradient id="paint0_radial_10975_186729" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(197.794,0,0,180.137,114.878,-34.7674)">
+      <stop offset="0.5561" stop-color="#6D4AFF" id="stop414"/>
+      <stop offset="1" stop-color="#FF50C3" id="stop416"/>
+    </radialGradient>
+    <linearGradient id="paint1_linear_10975_186729" x1="-1.3974" y1="-20.4032" x2="129.901" y2="125.087" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7341FF" id="stop419"/>
+      <stop offset="0.3593" stop-color="#B487FF" id="stop421"/>
+      <stop offset="1" stop-color="#FFC8FF" id="stop423"/>
+    </linearGradient>
+  </defs>
+</svg>

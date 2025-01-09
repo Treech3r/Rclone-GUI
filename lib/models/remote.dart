@@ -70,12 +70,20 @@ class Remote {
   }
 
   String get getCommercialLogo {
-    switch (type) {
-      case 'drive':
-        return 'assets/images/drive_logo.svg';
-      default:
-        return 'assets/images/generic_cloud_logo.svg';
-    }
+    Set<String> availableLogos = {
+      'drive',
+      'dropbox',
+      'mega',
+      'webdav',
+      'sftp',
+      'protondrive',
+      'pixeldrain',
+      'onedrive',
+      'google photos',
+      's3',
+    };
+
+    return 'assets/images/cloud_storage_logos/${availableLogos.contains(type) ? type : 'generic_cloud_logo'}.svg';
   }
 
   @override
