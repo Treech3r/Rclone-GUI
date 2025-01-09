@@ -17,6 +17,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final bool rcloneInstalled;
+
   const MyApp(this.rcloneInstalled, {super.key});
 
   @override
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
           primary: const Color(0xFFc2c2c2),
         ),
         useMaterial3: true,
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+        ),
       ),
       home:
           rcloneInstalled ? const MountsScreen() : CouldNotStartServerScreen(),

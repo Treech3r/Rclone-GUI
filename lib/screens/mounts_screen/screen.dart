@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rclone_gui/widgets/rounded_button.dart';
 
 import '../../models/mount.dart';
 import '../../services/sqflite.dart';
@@ -46,13 +47,13 @@ class _MountsScreenState extends State<MountsScreen> {
     if (!fetched) {
       bodyContent = Center(child: Text('Buscando remotes...'));
     } else if (_mounts.isEmpty) {
-      bodyContent = EmptyWarning(() => addMount(context));
+      bodyContent = EmptyWarning();
     } else {
       bodyContent = ListView.builder(
-        padding: const EdgeInsets.only(top: 6, left: 12, right: 12, bottom: 80),
+        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 80),
         itemCount: _mounts.length,
         itemBuilder: (_, index) => Padding(
-          padding: const EdgeInsets.only(top: 6, bottom: 6),
+          padding: const EdgeInsets.only(bottom: 6),
           child: MountTile(
             _mounts[index],
             editCallback: () => setState(() {}),
@@ -65,8 +66,9 @@ class _MountsScreenState extends State<MountsScreen> {
       appBar: _mounts.isEmpty
           ? null
           : AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Colors.transparent,
               title: Text('Seus mounts'),
+        centerTitle: true,
             ),
       floatingActionButton: _mounts.isEmpty
           ? null
@@ -78,14 +80,19 @@ class _MountsScreenState extends State<MountsScreen> {
               child: Icon(Icons.add, color: Colors.white),
             ),
       body: bodyContent,
+      bottomSheet: _mounts.isNotEmpty
+          ? null
+          : RoundedButton(
+              onPressed: () => addMount(context),
+              label: 'Criar primeiro mount',
+              externalPadding: const EdgeInsets.all(12.0),
+            ),
     );
   }
 }
 
 class EmptyWarning extends StatelessWidget {
-  final VoidCallback callback;
-
-  const EmptyWarning(this.callback, {super.key});
+  const EmptyWarning({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +104,7 @@ class EmptyWarning extends StatelessWidget {
         Text(
           'Um pouco vazio por aqui...',
           style: Theme.of(context).textTheme.headlineMedium,
+          textAlign: TextAlign.center,
         ),
         SizedBox(height: 20),
         Image.asset(
@@ -107,20 +115,7 @@ class EmptyWarning extends StatelessWidget {
         Text(
           'Que tal criar seu primeiro mount?',
           style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        SizedBox(height: 20),
-        FilledButton(
-          onPressed: callback,
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(Colors.deepPurpleAccent),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'Criar primeiro mount',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
