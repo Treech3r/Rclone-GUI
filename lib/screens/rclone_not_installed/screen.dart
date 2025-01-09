@@ -7,23 +7,20 @@ import '../../widgets/rounded_button.dart';
 import '../mounts_screen/screen.dart';
 
 class CouldNotStartServerScreen extends StatelessWidget {
-  CouldNotStartServerScreen({super.key});
-
   late final String message;
+
+  CouldNotStartServerScreen({super.key}) {
+    if (Platform.isWindows) {
+      message =
+      'Para sistemas Windows, certifique-se de adicionar o rclone à variável de ambiente PATH. Após fazer isso, tente novamente.';
+    } else {
+      message =
+      'Para sistemas ${Platform.isMacOS ? 'macOS' : 'Linux'}, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isWindows) {
-      message =
-          'Para sistemas Windows, certifique-se de adicionar o rclone à variável de ambiente PATH. Após fazer isso, tente novamente.';
-    } else if (Platform.isMacOS) {
-      message =
-          'Para sistemas macOS, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
-    } else {
-      message =
-          'Para sistemas Linux, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
-    }
-
     return Scaffold(
       backgroundColor: Colors.redAccent.withOpacity(0.2),
       body: Center(
