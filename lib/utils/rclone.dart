@@ -44,9 +44,6 @@ Future<List<Remote>> getAllRemotes() async {
       await _fetchRemoteTypes(remotesNames);
   List<Remote> remotes = await _buildRemotes(remotesNamesAndTypes);
 
-  // TODO: remove this filter to support all remotes
-  remotes.removeWhere((remote) => remote.type != 'drive');
-
   Set<String> mountedRemotes = (await _getMountedRemotes()).toSet();
 
   for (var remote in remotes) {

@@ -26,7 +26,7 @@ class Remote {
       case 'drive':
         return 'assets/images/drive_logo.svg';
       default:
-        return '';
+        return 'assets/images/generic_cloud_logo.svg';
     }
   }
 
