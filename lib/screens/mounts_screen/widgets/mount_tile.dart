@@ -79,17 +79,16 @@ class _MountTileState extends State<MountTile> {
                       opacity: 0.8,
                       child: Text(
                         widget.mount.mountPath.length == 1
-                            ? '${widget.mount.remote?.getCommercialName ?? ''} (${widget.mount.mountPath}:)'
+                            ? '${widget.mount.remote?.getCommercialName} (${widget.mount.mountPath}:)'
                             : widget.mount.remote?.getCommercialName ?? '',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
+                    if (widget.mount.mountPath.length > 1)
                     Opacity(
                       opacity: 0.8,
                       child: Text(
-                        widget.mount.mountPath.length == 1
-                            ? '${widget.mount.mountPath}:'
-                            : widget.mount.mountPath,
+                        widget.mount.mountPath,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
