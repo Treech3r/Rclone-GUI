@@ -125,15 +125,14 @@ void _startRcloneServer() async {
     serverShell!.kill();
   }
 
-  serverShell = Shell(throwOnError: false);
+  serverShell = Shell(
+    throwOnError: false,
+    // Open shell in application directory because rclone binary will be bundled in final build
+    workingDirectory: Directory.current.path,
+  );
 
-  String rcloneBin = 'rclone';
-
-  // On macOS, the PATH variable might not work for GUI apps.
-  // Use the full path to rclone as a workaround.
-  if (Platform.isMacOS) {
-    rcloneBin = '/usr/local/bin/rclone';
-  }
+  // In macOS, it uses the full path to the rclone binary due to my laziness in finding a way to include the rclone binary in the final release
+  String rcloneBin = Platform.isMacOS ? '/usr/local/bin/rclone' : 'rclone';
 
   serverShell!.run('$rcloneBin rcd --rc-addr=localhost:8965 --rc-no-auth');
 }
