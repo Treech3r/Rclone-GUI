@@ -81,8 +81,13 @@ Future<void> performMount(Mount mount) async {
   await _makePostRequest('/mount/mount', queryParameters: {
     'fs': '${mount.remote!.name}:',
     'mountPoint': _getMountPoint(mount),
-    'mountOpt': '{"DeviceName": "$mountName", "VolumeName": "$mountName"}',
-    'vfsOpt': '{"CacheMode": 1, "ReadOnly": ${!mount.allowWrite}}'
+    'mountOpt':
+        '{"DeviceName": "$mountName", "VolumeName": "$mountName", "AllowNonEmpty": true, "AllowOther": true, "AttrTimeout": "1s"}',
+    'vfsOpt':
+        '{"CacheMode": 3, "ReadOnly": ${!mount.allowWrite}, "DirCacheTime": "60h", "ChunkSize": "32M", "ChunkSizeLimit": "512M", "CacheMaxAge": "5m"}',
+    'TPSLimit': '10',
+    'TPSLimitBurst': '10',
+    'BufferSize': '1M',
   });
 }
 
