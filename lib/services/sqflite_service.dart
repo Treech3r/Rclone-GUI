@@ -2,7 +2,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/mount.dart';
 
-class SqfliteService {
+abstract class SqfliteService {
   static late Database _db;
 
   static const kCurrentDatabaseVersion = 1;

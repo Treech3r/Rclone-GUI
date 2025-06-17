@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'screens/mounts_screen/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
 import 'services/sqflite_service.dart';
-import 'utils/rclone.dart';
+import 'utils/rclone_server.dart';
 
 void main() async {
   // Necessary because of sqflite
   WidgetsFlutterBinding.ensureInitialized();
   await SqfliteService.initialize();
 
-  final serverStarted = await startRcloneServer();
+  final serverStarted = await RcloneServer.start();
 
   runApp(MyApp(serverStarted));
 }

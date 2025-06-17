@@ -1,7 +1,7 @@
 import '../models/remote.dart';
 import 'rclone_service.dart';
 
-class RemoteService {
+abstract class RemoteService {
   static List<Remote> _remotes = [];
 
   static Future<List<Remote>> getAllRemotes() async {

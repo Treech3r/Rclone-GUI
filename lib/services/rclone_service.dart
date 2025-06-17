@@ -1,9 +1,9 @@
-import '../utils/rclone.dart' as rclone_utils;
+import '../utils/rclone_server.dart';
 
 class RcloneService {
   static Future<List<Map<String, dynamic>>> getAllRemotes() async {
     var remotesNamesResponse =
-        await rclone_utils.requestToRcloneApi('/config/listremotes');
+        await RcloneServer.request('/config/listremotes');
 
     if (remotesNamesResponse['remotes'] == null) {
       return [];
@@ -14,7 +14,7 @@ class RcloneService {
 
     final remotesDetailsResponse = await Future.wait(
       remotesNames.map(
-        (name) => rclone_utils.requestToRcloneApi('/config/get?name=$name'),
+        (name) => RcloneServer.request('/config/get?name=$name'),
       ),
     );
 

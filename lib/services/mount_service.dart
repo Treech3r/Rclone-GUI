@@ -1,6 +1,6 @@
 import '../models/mount.dart';
 import '../models/remote.dart';
-import '../utils/rclone.dart';
+import '../utils/rclone_server.dart';
 import 'remote_service.dart';
 import 'sqflite_service.dart';
 
@@ -18,7 +18,7 @@ class MountService {
   static Future<void> mount(Mount mount) async {
     var mountName = mount.name ?? '${mount.remote!.name}:';
     final String mountPath = _sanitizeMountPath(mount.mountPath);
-    await requestToRcloneApi('/mount/mount', queryParameters: {
+    await RcloneServer.request('/mount/mount', queryParameters: {
       'fs': '${mount.remote!.name}:',
       'mountPoint': mountPath,
       'mountOpt':
@@ -33,7 +33,7 @@ class MountService {
 
   static Future<void> unmount(Mount mount) async {
     final String mountPath = _sanitizeMountPath(mount.mountPath);
-    await requestToRcloneApi(
+    await RcloneServer.request(
       '/mount/unmount',
       queryParameters: {'mountPoint': mountPath},
     );
@@ -60,7 +60,7 @@ class MountService {
   }
 
   static Future<List<String>> _getMountPointsCurrentlyInUse() async {
-    var response = await requestToRcloneApi('/mount/listmounts');
+    var response = await RcloneServer.request('/mount/listmounts');
 
     if (response['mountPoints'] == null) {
       return [];

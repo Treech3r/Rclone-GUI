@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../utils/rclone.dart';
+import '../../utils/rclone_server.dart';
 import '../../widgets/rounded_button.dart';
 import '../mounts_screen/screen.dart';
 
@@ -68,7 +68,7 @@ class _TryAgainButtonState extends State<TryAgainButton> {
       isTrying = true;
     });
 
-    final serverStarted = await startRcloneServer();
+    final serverStarted = await RcloneServer.start();
 
     if (context.mounted) {
       if (!serverStarted) {
