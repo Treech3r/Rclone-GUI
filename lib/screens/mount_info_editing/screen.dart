@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/mount.dart';
 import '../../models/remote.dart';
-import '../../services/sqflite.dart';
+import '../../services/sqflite_service.dart';
 import '../../utils/windows.dart';
 import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';

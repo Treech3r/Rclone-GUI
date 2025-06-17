@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/mount.dart';
-import '../../../utils/rclone.dart';
+import '../../../services/mount_service.dart';
 import '../../../widgets/rounded_button.dart';
 import '../../mount_info_editing/screen.dart';
 
@@ -30,7 +30,7 @@ class _MountTileState extends State<MountTile> {
       isMounting = true;
     });
 
-    await performMount(widget.mount);
+    await MountService.mount(widget.mount);
     setState(() {
       widget.mount.toggleMountStatus();
       isMounting = false;
@@ -42,7 +42,7 @@ class _MountTileState extends State<MountTile> {
       isMounting = true;
     });
 
-    await performUnmount(widget.mount);
+    await MountService.unmount(widget.mount);
     widget.mount.toggleMountStatus();
 
     setState(() {
@@ -63,26 +63,26 @@ class _MountTileState extends State<MountTile> {
                 widget.mount.remote == null
                     ? Icon(Icons.error, color: Colors.red, size: 50)
                     : Stack(
-                  children: [
-                    SvgPicture.asset(
-                      widget.mount.remote!.getCommercialLogo,
-                      fit: BoxFit.scaleDown,
-                      height: 50,
-                    ),
-                    if (widget.mount.remote!.parentRemote != null &&
-                        widget.mount.remote!.type == 'crypt')
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Icon(
-                          Icons.lock,
-                          shadows: [
-                            BoxShadow(color: Colors.black, blurRadius: 5),
-                          ],
-                        ),
+                        children: [
+                          SvgPicture.asset(
+                            widget.mount.remote!.getCommercialLogo,
+                            fit: BoxFit.scaleDown,
+                            height: 50,
+                          ),
+                          if (widget.mount.remote!.parentRemote != null &&
+                              widget.mount.remote!.type == 'crypt')
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Icon(
+                                Icons.lock,
+                                shadows: [
+                                  BoxShadow(color: Colors.black, blurRadius: 5),
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
                 SizedBox(width: 15),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,13 +101,13 @@ class _MountTileState extends State<MountTile> {
                       ),
                     ),
                     if (widget.mount.mountPath.length > 1)
-                    Opacity(
-                      opacity: 0.8,
-                      child: Text(
-                        widget.mount.mountPath,
-                        style: Theme.of(context).textTheme.bodySmall,
+                      Opacity(
+                        opacity: 0.8,
+                        child: Text(
+                          widget.mount.mountPath,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ],
