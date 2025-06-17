@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/rclone.dart';
+import '../../services/remote_service.dart';
 import 'widgets/remote_tile.dart';
 
 class RemoteSelectionScreen extends StatefulWidget {
@@ -24,7 +24,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
         ),
       ),
       body: FutureBuilder(
-        future: getAllRemotes(),
+        future: RemoteService.getAllRemotes(),
         builder: (_, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: Text('Lendo configuração do rclone...'));

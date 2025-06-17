@@ -2,7 +2,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/mount.dart';
 import '../models/remote.dart';
-import '../utils/rclone.dart';
+import 'remote_service.dart';
 
 class SqfliteService {
   static late Database _db;
@@ -58,7 +58,7 @@ class SqfliteService {
   }
 
   static Future<List<Mount>> getAllMounts() async {
-    var remotes = await getAllRemotes();
+    var remotes = await RemoteService.getAllRemotes();
     var result = await _db.query('Mount');
 
     // TODO: deal with the case where no remote is found by name
