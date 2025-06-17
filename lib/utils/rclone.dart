@@ -33,19 +33,36 @@ Future<bool> startRcloneServer() async {
   return false;
 }
 
-Future<List<Remote>> getAllRemotes() async {
+Future<List<Map<String, String>>> getAllRemotes() async {
   List<String> remotesNames = await _getAllRemotes();
+  List<Map<String, String>> remotes = await _fetchRemotes2(remotesNames);
 
-  if (remotesNames.isEmpty) {
+  return remotes;
+}
+
+Future<List<String>> _getAllRemotes() async {
+  var response = await _makePostRequest('/config/listremotes');
+
+  if (response['remotes'] == null) {
     return [];
   }
 
-  List<Remote> remotes = await _fetchRemotes(remotesNames);
+  return List<String>.from(response['remotes']);
+}
 
-  Set<String> mountedRemotes = (await _getMountedRemotes()).toSet();
+Future<List<Map<String, String>>> _fetchRemotes2(List<String> remoteNames) async {
+  final responses = await Future.wait(
+    remoteNames.map((name) => _makePostRequest('/config/get?name=$name')),
+  );
 
-  for (var remote in remotes) {
-    remote.mounted = mountedRemotes.contains(remote.name);
+  List<Map<String, String>> remotes = [];
+
+  for (var i = 0; i < remoteNames.length; i++) {
+    remotes.add({
+      'name': remoteNames[i],
+      'type': responses[i]['type'],
+      'parentRemote': responses[i]['remote']
+    });
   }
 
   return remotes;
@@ -117,16 +134,6 @@ Future<void> performUnmount(Mount mount) async {
     '/mount/unmount',
     queryParameters: {'mountPoint': _getMountPoint(mount)},
   );
-}
-
-Future<List<String>> _getAllRemotes() async {
-  var response = await _makePostRequest('/config/listremotes');
-
-  if (response['remotes'] == null) {
-    return [];
-  }
-
-  return List<String>.from(response['remotes']);
 }
 
 Future<List<String>> _getMountedRemotes() async {
