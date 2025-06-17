@@ -1,8 +1,6 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/mount.dart';
-import '../models/remote.dart';
-import 'remote_service.dart';
 
 class SqfliteService {
   static late Database _db;
@@ -57,17 +55,10 @@ class SqfliteService {
     );
   }
 
-  static Future<List<Mount>> getAllMounts() async {
-    var remotes = await RemoteService.getAllRemotes();
-    var result = await _db.query('Mount');
-
-    // TODO: deal with the case where no remote is found by name
-    return result.map((r) {
-      Remote? remote;
-      try {
-        remote = remotes.firstWhere((a) => a.name == r['remote']);
-      } catch (_) {}
-      return Mount.fromJson({...r, 'remote': remote});
-    }).toList();
+  // I decided to return a list of maps instead of Mount objects because we
+  // also need to fetch Remote objects from the RemoteService in order to
+  // properly construct Mount objects. This is done in the MountService.
+  static Future<List<Map<String, Object?>>> getAllMounts() async {
+    return await _db.query('Mount');
   }
 }

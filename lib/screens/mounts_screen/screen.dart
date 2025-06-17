@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rclone_gui/widgets/rounded_button.dart';
 
 import '../../models/mount.dart';
-import '../../services/sqflite.dart';
+import '../../services/mount_service.dart';
+import '../../widgets/rounded_button.dart';
 import '../mount_info_editing/screen.dart';
 import 'widgets/mount_tile.dart';
 
@@ -19,7 +19,7 @@ class _MountsScreenState extends State<MountsScreen> {
 
   @override
   void initState() {
-    SqfliteService.getAllMounts().then((mounts) => setState(() {
+    MountService.getAllMounts().then((mounts) => setState(() {
           _mounts = mounts;
           fetched = true;
         }));
@@ -68,7 +68,7 @@ class _MountsScreenState extends State<MountsScreen> {
           : AppBar(
               backgroundColor: Colors.transparent,
               title: Text('Seus mounts'),
-        centerTitle: true,
+              centerTitle: true,
             ),
       floatingActionButton: _mounts.isEmpty
           ? null

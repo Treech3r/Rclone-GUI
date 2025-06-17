@@ -80,18 +80,6 @@ Future<void> performUnmount(Mount mount) async {
   );
 }
 
-Future<List<String>> getMountPointsCurrentlyInUse() async {
-  var response = await requestToRcloneApi('/mount/listmounts');
-
-  if (response['mountPoints'] == null) {
-    return [];
-  }
-
-  return (response['mountPoints'] as List<dynamic>)
-      .map((mount) => (mount['Fs'] as String).replaceAll(':', ''))
-      .toList();
-}
-
 Future<Map<String, dynamic>> requestToRcloneApi(
   String path, {
   Map<String, dynamic>? queryParameters,
