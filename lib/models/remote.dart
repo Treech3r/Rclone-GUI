@@ -70,7 +70,8 @@ class Remote {
       'yandex': 'Yandex Disk',
       'zoho': 'Zoho',
       'local': 'Arquivos locais',
-      'memory': 'Arquivos na memória RAM'
+      'memory': 'Arquivos na memória RAM',
+      'union': 'União'
     };
 
     if (remote.parentRemote != null) {
