@@ -12,10 +12,10 @@ class CouldNotStartServerScreen extends StatelessWidget {
   CouldNotStartServerScreen({super.key}) {
     if (Platform.isWindows) {
       message =
-      'Para sistemas Windows, certifique-se de adicionar o rclone à variável de ambiente PATH. Após fazer isso, tente novamente.';
+          'Para sistemas Windows, certifique-se de adicionar o rclone à variável de ambiente PATH. Após fazer isso, tente novamente.';
     } else {
       message =
-      'Para sistemas ${Platform.isMacOS ? 'macOS' : 'Linux'}, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
+          'Para sistemas ${Platform.isMacOS ? 'macOS' : 'Linux'}, por favor, instale o rclone através do site oficial (rclone.org). Após instalar, tente novamente.';
     }
   }
 

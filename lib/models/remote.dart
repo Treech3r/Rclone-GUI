@@ -1,11 +1,17 @@
 class Remote {
   final String name;
   final String type;
+
   // For crypt remotes and the like;
   late Remote? parentRemote;
   bool mounted;
 
-  Remote({required this.name, required this.type, this.parentRemote, this.mounted = false});
+  Remote({
+    required this.name,
+    required this.type,
+    this.parentRemote,
+    this.mounted = false,
+  });
 
   factory Remote.fromJson(dynamic json) {
     return Remote(
