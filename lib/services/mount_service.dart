@@ -2,7 +2,7 @@ import '../models/mount.dart';
 import '../models/remote.dart';
 import '../utils/rclone.dart';
 import 'remote_service.dart';
-import 'sqflite.dart';
+import 'sqflite_service.dart';
 
 class MountService {
   static List<Mount> _mounts = [];
