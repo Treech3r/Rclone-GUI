@@ -15,6 +15,30 @@ class MountService {
     return _mounts;
   }
 
+  static Future<void> mount(Mount mount) async {
+    var mountName = mount.name ?? '${mount.remote!.name}:';
+    final String mountPath = _sanitizeMountPath(mount.mountPath);
+    await requestToRcloneApi('/mount/mount', queryParameters: {
+      'fs': '${mount.remote!.name}:',
+      'mountPoint': mountPath,
+      'mountOpt':
+          '{"DeviceName": "$mountName", "VolumeName": "$mountName", "AllowNonEmpty": true, "AllowOther": true, "AttrTimeout": "1s"}',
+      'vfsOpt':
+          '{"CacheMode": 3, "ReadOnly": ${!mount.allowWrite}, "DirCacheTime": "60h", "ChunkSize": "32M", "ChunkSizeLimit": "512M", "CacheMaxAge": "5m"}',
+      'TPSLimit': '10',
+      'TPSLimitBurst': '10',
+      'BufferSize': '1M',
+    });
+  }
+
+  static Future<void> unmount(Mount mount) async {
+    final String mountPath = _sanitizeMountPath(mount.mountPath);
+    await requestToRcloneApi(
+      '/mount/unmount',
+      queryParameters: {'mountPoint': mountPath},
+    );
+  }
+
   static Future<List<Mount>> _getAllMounts() async {
     var remotes = await RemoteService.getAllRemotes();
     var result = await SqfliteService.getAllMounts();
@@ -45,5 +69,10 @@ class MountService {
     return (response['mountPoints'] as List<dynamic>)
         .map((mount) => (mount['MountPoint'] as String).replaceAll(':', ''))
         .toList();
+  }
+
+  static String _sanitizeMountPath(String mountPath) {
+    // If this is a single character, it means it's a drive letter on Windows
+    return mountPath.length == 1 ? '$mountPath:' : mountPath;
   }
 }

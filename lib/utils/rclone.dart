@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:process_run/process_run.dart';
 
-import '../models/mount.dart';
-
 const kBaseUrl = "http://localhost:8965";
 
 // This shell should be global. Otherwise, it will be destroyed by garbage
@@ -58,28 +56,6 @@ void _startRcloneServer() async {
   serverShell!.run('$rcloneBin rcd --rc-addr=localhost:8965 --rc-no-auth');
 }
 
-Future<void> performMount(Mount mount) async {
-  var mountName = mount.name ?? '${mount.remote!.name}:';
-  await requestToRcloneApi('/mount/mount', queryParameters: {
-    'fs': '${mount.remote!.name}:',
-    'mountPoint': _getMountPoint(mount),
-    'mountOpt':
-        '{"DeviceName": "$mountName", "VolumeName": "$mountName", "AllowNonEmpty": true, "AllowOther": true, "AttrTimeout": "1s"}',
-    'vfsOpt':
-        '{"CacheMode": 3, "ReadOnly": ${!mount.allowWrite}, "DirCacheTime": "60h", "ChunkSize": "32M", "ChunkSizeLimit": "512M", "CacheMaxAge": "5m"}',
-    'TPSLimit': '10',
-    'TPSLimitBurst': '10',
-    'BufferSize': '1M',
-  });
-}
-
-Future<void> performUnmount(Mount mount) async {
-  await requestToRcloneApi(
-    '/mount/unmount',
-    queryParameters: {'mountPoint': _getMountPoint(mount)},
-  );
-}
-
 Future<Map<String, dynamic>> requestToRcloneApi(
   String path, {
   Map<String, dynamic>? queryParameters,
@@ -113,9 +89,4 @@ Future<Map<String, dynamic>> requestToRcloneApi(
   }
 
   return jsonDecode(response.body);
-}
-
-String _getMountPoint(Mount mount) {
-  var mountPath = mount.mountPath;
-  return mountPath.length == 1 ? '$mountPath:' : mountPath;
 }
