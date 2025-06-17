@@ -41,7 +41,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
               maxCrossAxisExtent: 150,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              mainAxisExtent: 150,
+              mainAxisExtent: 170,
             ),
           );
         },

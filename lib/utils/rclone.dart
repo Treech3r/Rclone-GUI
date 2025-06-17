@@ -40,9 +40,7 @@ Future<List<Remote>> getAllRemotes() async {
     return [];
   }
 
-  Map<String, String> remotesNamesAndTypes =
-      await _fetchRemoteTypes(remotesNames);
-  List<Remote> remotes = await _buildRemotes(remotesNamesAndTypes);
+  List<Remote> remotes = await _fetchRemotes(remotesNames);
 
   Set<String> mountedRemotes = (await _getMountedRemotes()).toSet();
 
@@ -53,27 +51,50 @@ Future<List<Remote>> getAllRemotes() async {
   return remotes;
 }
 
-Future<Map<String, String>> _fetchRemoteTypes(List<String> remotesNames) async {
-  Map<String, String> remotesWithType = {};
+Future<List<Remote>> _fetchRemotes(List<String> remoteNames) async {
+  // Map to store Remote objects
+  final remotes = <String, Remote>{};
+  // Map to store deferred parent relationships (childName -> parentName)
+  final deferredParents = <String, String>{};
 
-  for (String remote in remotesNames) {
-    var response = await _makePostRequest('/config/get?name=$remote');
-    remotesWithType[remote] = response['type'];
-  }
-
-  return remotesWithType;
-}
-
-Future<List<Remote>> _buildRemotes(
-  Map<String, String> remotesWithNameAndType,
-) async {
-  List<Remote> remotes = [];
-
-  remotesWithNameAndType.forEach(
-    (key, value) => remotes.add(Remote(name: key, type: value)),
+  final responses = await Future.wait(
+    remoteNames.map((name) => _makePostRequest('/config/get?name=$name')),
   );
 
-  return remotes;
+  // Process responses and build remotes map
+  for (var i = 0; i < remoteNames.length; i++) {
+    final name = remoteNames[i];
+    final response = responses[i];
+
+    // Validate response
+    if (response case {'type': String type}) {
+      final remote = Remote(name: name, type: type);
+      remotes[name] = remote;
+
+      // Store parent relationship if it exists
+      if (response['remote'] case String parentName) {
+        parentName = parentName.split(':')[0];
+        // Link parent immediately if parent is already processed
+        if (remotes.containsKey(parentName)) {
+          remote.parentRemote = remotes[parentName];
+        } else {
+          // Defer linking by storing in deferredParents
+          deferredParents[name] = parentName;
+        }
+      }
+    }
+  }
+
+  // Resolve deferred parent relationships
+  for (final entry in deferredParents.entries) {
+    final childName = entry.key;
+    final parentName = entry.value;
+    if (remotes.containsKey(parentName)) {
+      remotes[childName]?.parentRemote = remotes[parentName];
+    }
+  }
+
+  return remotes.values.toList();
 }
 
 Future<void> performMount(Mount mount) async {

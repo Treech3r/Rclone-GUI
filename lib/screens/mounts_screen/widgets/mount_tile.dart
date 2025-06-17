@@ -62,11 +62,27 @@ class _MountTileState extends State<MountTile> {
               children: [
                 widget.mount.remote == null
                     ? Icon(Icons.error, color: Colors.red, size: 50)
-                    : SvgPicture.asset(
-                        widget.mount.remote!.getCommercialLogo,
-                        fit: BoxFit.scaleDown,
-                        height: 50,
+                    : Stack(
+                  children: [
+                    SvgPicture.asset(
+                      widget.mount.remote!.getCommercialLogo,
+                      fit: BoxFit.scaleDown,
+                      height: 50,
+                    ),
+                    if (widget.mount.remote!.parentRemote != null &&
+                        widget.mount.remote!.type == 'crypt')
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Icon(
+                          Icons.lock,
+                          shadows: [
+                            BoxShadow(color: Colors.black, blurRadius: 5),
+                          ],
+                        ),
                       ),
+                  ],
+                ),
                 SizedBox(width: 15),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

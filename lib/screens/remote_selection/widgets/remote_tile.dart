@@ -46,10 +46,26 @@ class _RemoteTileState extends State<RemoteTile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  widget.remote.getCommercialLogo,
-                  fit: BoxFit.scaleDown,
-                  height: 50,
+                Stack(
+                  children: [
+                    SvgPicture.asset(
+                      widget.remote.getCommercialLogo,
+                      fit: BoxFit.scaleDown,
+                      height: 50,
+                    ),
+                    if (widget.remote.parentRemote != null &&
+                        widget.remote.type == 'crypt')
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Icon(
+                          Icons.lock,
+                          shadows: [
+                            BoxShadow(color: Colors.black, blurRadius: 5),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(height: 18),
                 CustomText(
@@ -63,6 +79,15 @@ class _RemoteTileState extends State<RemoteTile> {
                     color: isHovered ? inversePrimaryColor : primaryColor,
                   ),
                 ),
+                if (widget.remote.parentRemote != null &&
+                    widget.remote.type == 'crypt')
+                  Opacity(
+                    opacity: 0.7,
+                    child: CustomText(
+                      text: '(criptografado)',
+                      color: isHovered ? inversePrimaryColor : primaryColor,
+                    ),
+                  ),
               ],
             ),
           ),
