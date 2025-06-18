@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rclone_gui/screens/remote_creation_wizard/screen.dart';
 
 import '../../services/remote_service.dart';
 import 'widgets/remote_tile.dart';
@@ -45,6 +47,13 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        tooltip: 'Configurar novo remote',
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProviderScope(child: RemoteCreationScreen()))),
+        backgroundColor: Colors.deepPurpleAccent,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
