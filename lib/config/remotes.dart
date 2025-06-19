@@ -16,36 +16,42 @@ abstract class Config {
             type: RemoteCreationStepType.form,
             title: 'Informações básicas',
             description:
-                'Informe suas credenciais do Google Drive API, ID da pasta raiz e ID do Drive de Equipe.\nTodos os valores são opcionais.',
+                'Todos os valores são opcionais, exceto o nome do remote.',
             parameters: [
               RemoteCreationTextInput(
                 key: 'name',
                 label: 'Nome do Remote',
+                hint:
+                    'Este é apenas um apelido para lhe ajudar a identificar o remote. É útil para diferenciar múltiplos remotes do mesmo tipo.',
                 type: RemoteCreationInputType.text,
                 required: true,
               ),
               RemoteCreationTextInput(
                 key: 'client_id',
                 label: 'Client ID',
+                hint:
+                    'Você pode criar um Client ID no Google Cloud Console. É recomendado criar um Client ID para evitar limites de requisições.',
                 type: RemoteCreationInputType.text,
               ),
               RemoteCreationTextInput(
                 key: 'client_secret',
                 label: 'Client Secret',
+                hint:
+                    'Você pode criar um Client Secret no Google Cloud Console. É recomendado criar um Client Secret para evitar limites de requisições.',
                 type: RemoteCreationInputType.password,
               ),
               RemoteCreationTextInput(
                 key: 'root_folder_id',
-                label: 'ID da pasta raiz',
+                label: 'ID de pasta raiz',
                 hint:
-                    'Caso deixe em branco, a pasta raiz será a pasta raiz do seu drive (ou Drive de Equipe, caso você insira um ID abaixo).',
+                    'Se você informar um ID de pasta raiz, o rclone só irá acessar essa pasta e suas subpastas. Se não definir, o rclone irá acessar todo o seu Google Drive.',
                 type: RemoteCreationInputType.text,
               ),
               RemoteCreationTextInput(
                 key: 'team_drive',
-                label: 'ID do Drive de Equipe',
+                label: 'ID de Drive de Equipe',
                 hint:
-                    'Se você informou um ID de pasta raiz acima, certifique-se de que a pasta reside dentro deste Drive de Equipe, e não no seu drive pessoal.',
+                    'Se você não informar um ID de Drive de Equipe, o rclone irá usar o seu Google Drive pessoal. Você pode informar um ID de Drive de Equipe para montar um Drive de Equipe específico.',
                 type: RemoteCreationInputType.text,
               ),
             ],

@@ -48,10 +48,7 @@ class RemoteConfigWizardState extends ConsumerState<RemoteCreationWizard> {
       appBar: AppBar(
         title: Text(step.title),
         leading: state.currentStepIndex > 0
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => notifier.previousStep(),
-              )
+            ? BackButton(onPressed: () => notifier.previousStep())
             : null,
       ),
       body: Padding(

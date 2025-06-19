@@ -155,14 +155,8 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(
           widget.mount != null ? 'Editando mount' : 'Criando novo mount',
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: Icon(Icons.arrow_back_outlined),
         ),
       ),
       body: Padding(

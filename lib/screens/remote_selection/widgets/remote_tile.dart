@@ -4,16 +4,21 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../models/remote.dart';
 
 class RemoteTile extends StatefulWidget {
-  final Remote remote;
+  final Remote? remote;
+  final String? remoteType;
   final BuildContext? parentContext;
   final VoidCallback? overrideCallback;
 
-  const RemoteTile({
-    required this.remote,
+  RemoteTile({
+    this.remote,
+    String? remoteType,
     this.overrideCallback,
     this.parentContext,
     super.key,
-  });
+  }) : remoteType = remoteType ?? remote?.type {
+    assert(remote != null || remoteType != null,
+        'Either remote or remoteType must be provided');
+  }
 
   @override
   State<RemoteTile> createState() => _RemoteTileState();
@@ -24,7 +29,7 @@ class _RemoteTileState extends State<RemoteTile> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final primaryColor = const Color(0xFF333333);
     final inversePrimaryColor = Theme.of(context).colorScheme.inversePrimary;
     return MouseRegion(
       onEnter: (_) => _onHover(true),
@@ -37,58 +42,65 @@ class _RemoteTileState extends State<RemoteTile> {
             Navigator.of(widget.parentContext!).pop(widget.remote);
           }
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          color: isHovered ? primaryColor : inversePrimaryColor,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    SvgPicture.asset(
-                      widget.remote.getCommercialLogo,
-                      fit: BoxFit.scaleDown,
-                      height: 50,
-                    ),
-                    if (widget.remote.parentRemote != null &&
-                        widget.remote.type == 'crypt')
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Icon(
-                          Icons.lock,
-                          shadows: [
-                            BoxShadow(color: Colors.black, blurRadius: 5),
-                          ],
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 170),
+          // Match GridView mainAxisExtent
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            color: isHovered ? primaryColor : inversePrimaryColor,
+            clipBehavior: Clip.hardEdge, // Clip overflow during resize
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 130),
+              // 170 - (20 top + 20 bottom)
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        child: SvgPicture.asset(
+                          Remote.commercialLogoFromType(widget.remoteType!),
+                          fit: BoxFit.scaleDown,
                         ),
                       ),
-                  ],
-                ),
-                SizedBox(height: 18),
-                CustomText(
-                  text: widget.remote.name,
-                  color: isHovered ? inversePrimaryColor : primaryColor,
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: CustomText(
-                    text: widget.remote.getCommercialName,
-                    color: isHovered ? inversePrimaryColor : primaryColor,
+                      if (widget.remote?.parentRemote != null &&
+                          widget.remote?.type == 'crypt')
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.lock,
+                            shadows: [
+                              BoxShadow(color: Colors.black, blurRadius: 5),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                if (widget.remote.parentRemote != null &&
-                    widget.remote.type == 'crypt')
+                  const SizedBox(height: 18),
+                  if (widget.remote != null)
+                    CustomText(
+                      text: widget.remote!.name,
+                    ),
                   Opacity(
-                    opacity: 0.7,
+                    opacity: widget.remote == null ? 0.8 : 0.6,
                     child: CustomText(
-                      text: '(criptografado)',
-                      color: isHovered ? inversePrimaryColor : primaryColor,
+                      text: Remote.commercialNameFromType(widget.remoteType!),
                     ),
                   ),
-              ],
+                  if (widget.remote?.parentRemote != null &&
+                      widget.remote?.type == 'crypt')
+                    Opacity(
+                      opacity: 0.3,
+                      child: CustomText(
+                        text: '(criptografado)',
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -105,11 +117,11 @@ class _RemoteTileState extends State<RemoteTile> {
 
 class CustomText extends StatelessWidget {
   final String text;
-  final Color color;
+  final Color? color;
 
   const CustomText({
     required this.text,
-    required this.color,
+    this.color,
     super.key,
   });
 
@@ -119,7 +131,10 @@ class CustomText extends StatelessWidget {
       text,
       softWrap: false,
       overflow: TextOverflow.fade,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+      maxLines: 1,
+      style: color == null
+          ? null
+          : Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
     );
   }
 }
