@@ -1,4 +1,6 @@
+import 'package:animate_gradient/animate_gradient.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../../models/mount.dart';
 import '../../services/mount_service.dart';
@@ -79,14 +81,36 @@ class _MountsScreenState extends State<MountsScreen> {
               backgroundColor: Colors.deepPurpleAccent,
               child: Icon(Icons.add, color: Colors.white),
             ),
-      body: bodyContent,
+      body: AnimateGradient(
+        animateAlignments: true,
+
+        primaryColors: [
+          const Color(0xFF320037),
+          const Color(0xFF10001b),
+          const Color(0xFF000137),
+
+        ],
+        secondaryColors: [
+          const Color(0xFF000137),
+          const Color(0xFF00011b),
+          const Color(0xFF11001b),
+        ],
+        child: bodyContent,
+      ),
       bottomSheet: _mounts.isNotEmpty
           ? null
-          : RoundedButton(
-              onPressed: () => addMount(context),
-              label: 'Criar primeiro mount',
-              externalPadding: const EdgeInsets.all(12.0),
-            ),
+          : LiquidGlass(
+        shape: LiquidRoundedSuperellipse(
+          borderRadius: Radius.circular(50),
+        ),
+        child: const SizedBox(
+          height: 200,
+          width: 200,
+          child: Center(
+            child: FlutterLogo(size: 100),
+          ),
+        ),
+      ),
     );
   }
 }
