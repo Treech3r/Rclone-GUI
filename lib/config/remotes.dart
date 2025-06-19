@@ -3,101 +3,120 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/remote_creation/remote_creation.dart';
 import '../models/remote_creation/remote_creation_input.dart';
 import '../models/remote_creation/remote_creation_step.dart';
+import '../services/rclone_service.dart';
 
 abstract class Config {
   static final remotes = Provider<List<RemoteCreation>>(
     (ref) => [
       RemoteCreation(
-        name: 'drive',
+        type: 'drive',
         displayName: 'Google Drive',
         steps: [
           RemoteCreationStep(
             type: RemoteCreationStepType.form,
-            title: 'Enter Google Drive Credentials',
-            description: 'Provide your Google API credentials.',
+            title: 'Informações básicas',
+            description:
+                'Informe suas credenciais do Google Drive API, ID da pasta raiz e ID do Drive de Equipe.\nTodos os valores são opcionais.',
             parameters: [
-              RemoteCreationInput(
+              RemoteCreationTextInput(
+                key: 'name',
+                label: 'Nome do Remote',
+                type: RemoteCreationInputType.text,
+                required: true,
+              ),
+              RemoteCreationTextInput(
                 key: 'client_id',
                 label: 'Client ID',
                 type: RemoteCreationInputType.text,
-                required: true,
-                hint: 'Enter your Google Client ID',
               ),
-              RemoteCreationInput(
+              RemoteCreationTextInput(
                 key: 'client_secret',
                 label: 'Client Secret',
                 type: RemoteCreationInputType.password,
-                required: true,
               ),
-              RemoteCreationInput(
-                key: 'scope',
-                label: 'Scope',
-                type: RemoteCreationInputType.dropdown,
-                options: ['drive', 'drive.readonly', 'drive.file'],
-                defaultValue: 'drive',
+              RemoteCreationTextInput(
+                key: 'root_folder_id',
+                label: 'ID da pasta raiz',
+                hint:
+                    'Caso deixe em branco, a pasta raiz será a pasta raiz do seu drive (ou Drive de Equipe, caso você insira um ID abaixo).',
+                type: RemoteCreationInputType.text,
+              ),
+              RemoteCreationTextInput(
+                key: 'team_drive',
+                label: 'ID do Drive de Equipe',
+                hint:
+                    'Se você informou um ID de pasta raiz acima, certifique-se de que a pasta reside dentro deste Drive de Equipe, e não no seu drive pessoal.',
+                type: RemoteCreationInputType.text,
               ),
             ],
-            nextButtonText: 'Authenticate',
-          ),
-          RemoteCreationStep(
-            type: RemoteCreationStepType.asyncTask,
-            title: 'Fetching Team Drives',
-            asyncTask: (config, ref) async {
-              // Placeholder: Replace with actual Google Drive API call
-              await Future.delayed(Duration(seconds: 2));
-              return {
-                'team_drives': [
-                  {'id': 'team1', 'name': 'Team Drive 1'},
-                  {'id': 'team2', 'name': 'Team Drive 2'},
-                ],
-              };
-            },
           ),
           RemoteCreationStep(
             type: RemoteCreationStepType.form,
-            title: 'Test',
-            description: 'Test',
+            title: 'Escopo e autenticação',
+            description:
+                '"Escopo" pode ser entendido como o "nível de permissão" que o rclone terá na sua conta do Google Drive. Selecione uma opção abaixo conforme a sua necessidade.',
             parameters: [
-              RemoteCreationInput(
-                key: 'client_id',
-                label: 'Client ID',
-                type: RemoteCreationInputType.text,
-                required: true,
-                hint: 'Enter your Google Client ID',
+              RemoteCreationTextInput(
+                key: 'scope',
+                label: 'Escopo',
+                type: RemoteCreationInputType.dropdown,
+                options: {
+                  'drive':
+                      'Acesso total aos arquivos, exceto à pasta especial de dados de aplicativos.',
+                  'drive.readonly':
+                      'Acesso somente de leitura (metadados e conteúdos dos arquivos).',
+                  'drive.file':
+                      'Acesso somente a arquivos criados pelo próprio rclone.',
+                  'drive.appfolder':
+                      'Acesso de escrita e leitura à pasta especial de dados de aplicativos. Estes arquivos não são visíveis no site do Google Drive.',
+                  'drive.metadata.readonly':
+                      'Acesso somente de leitura aos metadados dos arquivos. Não permite ver o conteúdo dos arquivos ou fazer download.'
+                },
+                defaultValue: 'drive',
               ),
             ],
-            nextButtonText: 'Authenticate',
+            nextButtonText: 'Fazer login com Google Drive',
+          ),
+          RemoteCreationStep(
+            type: RemoteCreationStepType.asyncTask,
+            title: 'Autenticando com Google Drive...',
+            asyncTask: (config, ref) async {
+              final token = await RcloneService.executeCliCommand('authorize',
+                      ['drive'], {'drive-scope': config['scope'] ?? ''}) ??
+                  '';
+              final regex =
+                  RegExp(r'--->\s*(\{.*?\})\s*<---End paste', dotAll: true);
+              final match = regex.firstMatch(token);
+
+              return {'token': match?.group(1)};
+            },
           ),
         ],
         validator: (config) {
-          if (config['client_id']!.isEmpty ||
-              config['client_secret']!.isEmpty) {
-            return 'Client ID and Secret are required';
-          }
           return null;
         },
       ),
       RemoteCreation(
-        name: 's3',
+        type: 's3',
         displayName: 'Amazon S3',
         steps: [
           RemoteCreationStep(
             type: RemoteCreationStepType.form,
             title: 'Enter S3 Credentials',
             parameters: [
-              RemoteCreationInput(
+              RemoteCreationTextInput(
                 key: 'access_key_id',
                 label: 'Access Key ID',
                 type: RemoteCreationInputType.text,
                 required: true,
               ),
-              RemoteCreationInput(
+              RemoteCreationTextInput(
                 key: 'secret_access_key',
                 label: 'Secret Access Key',
                 type: RemoteCreationInputType.password,
                 required: true,
               ),
-              RemoteCreationInput(
+              RemoteCreationTextInput(
                 key: 'region',
                 label: 'Region',
                 type: RemoteCreationInputType.text,

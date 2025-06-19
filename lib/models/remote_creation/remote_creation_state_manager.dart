@@ -40,7 +40,7 @@ class RemoteCreationStateManager extends StateNotifier<RemoteCreationState> {
   final Ref ref;
 
   RemoteCreationStateManager(this.remoteCreation, this.ref)
-      : super(RemoteCreationState(currentStepIndex: 0, config: {}));
+      : super(RemoteCreationState(currentStepIndex: 0, config: {'type': remoteCreation.type}));
 
   RemoteCreationStep get currentStep => remoteCreation.steps[state.currentStepIndex];
   bool get canGoNext => state.currentStepIndex < remoteCreation.steps.length - 1;
@@ -63,14 +63,13 @@ class RemoteCreationStateManager extends StateNotifier<RemoteCreationState> {
       try {
         final result = await currentStep.asyncTask!(state.config.cast<String, String>(), ref);
         state = state.copyWith(config: {...state.config, ...result}, isLoading: false);
+        if (canGoNext) {
+          state = state.copyWith(currentStepIndex: state.currentStepIndex + 1);
+        }
       } catch (e) {
         state = state.copyWith(isLoading: false, error: e.toString());
         return;
       }
-    }
-
-    if (canGoNext) {
-      state = state.copyWith(currentStepIndex: state.currentStepIndex + 1);
     }
   }
 
@@ -82,6 +81,10 @@ class RemoteCreationStateManager extends StateNotifier<RemoteCreationState> {
 
   void updateConfig(Map<String, dynamic> data) {
     state = state.copyWith(config: {...state.config, ...data});
+  }
+
+  String getConfigValue(String name) {
+    return state.config[name];
   }
 
   Future<String?> submit() async {

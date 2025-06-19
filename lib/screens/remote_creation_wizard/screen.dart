@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/remotes.dart';
+import '../../services/rclone_service.dart';
 import 'remote_creation_wizard.dart';
 
 class RemoteCreationScreen extends ConsumerWidget {
@@ -26,10 +27,7 @@ class RemoteCreationScreen extends ConsumerWidget {
                   builder: (context) => ProviderScope(
                     child: RemoteCreationWizard(
                       remoteCreation: remoteType,
-                      onComplete: (config) {
-                        print('Creating ${remoteType.name} with config: $config');
-                        // Call Rclone API here
-                      },
+                      onComplete: RcloneService.createRemote,
                     ),
                   ),
                 ),

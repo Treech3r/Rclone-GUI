@@ -13,8 +13,10 @@ enum RemoteCreationStepType {
 class RemoteCreationStep {
   final RemoteCreationStepType type;
   final String title;
-  final List<RemoteCreationInput>? parameters;
-  final Future<Map<String, dynamic>> Function(Map<String, String>, Ref)? asyncTask;
+  final List<RemoteCreationTextInput>? parameters;
+  final Future<Map<String, dynamic>> Function(Map<String, String>, Ref)?
+      asyncTask;
+  late final GlobalKey<FormState>? formKey;
   final Widget Function(Map<String, dynamic>, WidgetRef)? customBuilder;
   final String? nextButtonText;
   final String? description;
@@ -27,5 +29,9 @@ class RemoteCreationStep {
     this.customBuilder,
     this.nextButtonText,
     this.description,
-  });
+  }) {
+    if (type == RemoteCreationStepType.form) {
+      formKey = GlobalKey<FormState>();
+    }
+  }
 }

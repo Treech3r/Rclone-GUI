@@ -6,16 +6,16 @@ enum RemoteCreationInputType {
   number,
 }
 
-class RemoteCreationInput {
+class RemoteCreationTextInput {
   final String key;
   final String label;
   final RemoteCreationInputType type;
   final bool required;
   final String? defaultValue;
-  final List<String>? options;
+  final Map<String, String>? options;
   final String? hint;
 
-  RemoteCreationInput({
+  RemoteCreationTextInput({
     required this.key,
     required this.label,
     required this.type,
