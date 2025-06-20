@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../services/remote_service.dart';
+import '../../mount_info_editing/screen.dart';
+import '../../remote_creation_wizard/screen.dart';
 
 enum Tab { mount, remote }
 
+var _currentTab = Tab.mount;
+
 class CustomTabBar extends StatelessWidget {
   final Function(Tab) onTabChange;
-  final VoidCallback onPlusButtonTap;
 
   const CustomTabBar({
     required this.onTabChange,
-    required this.onPlusButtonTap,
     super.key,
   });
 
@@ -22,29 +27,62 @@ class CustomTabBar extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.bottomRight,
-          child: _RoundPlusButton(onTap: onPlusButtonTap),
+          child: _RoundPlusButton(),
         ),
       ],
     );
   }
 }
 
-class _RoundPlusButton extends StatefulWidget {
-  final VoidCallback onTap;
-
-  const _RoundPlusButton({required this.onTap});
+class _RoundPlusButton extends ConsumerStatefulWidget {
+  const _RoundPlusButton();
 
   @override
-  State<_RoundPlusButton> createState() => _RoundPlusButtonState();
+  ConsumerState<_RoundPlusButton> createState() => _RoundPlusButtonState();
 }
 
-class _RoundPlusButtonState extends State<_RoundPlusButton> {
+class _RoundPlusButtonState extends ConsumerState<_RoundPlusButton> {
+  late RemoteService remoteReader;
   bool isHovered = false;
+
+  @override
+  void initState() {
+    remoteReader = ref.read(RemoteService.instance.notifier);
+    super.initState();
+  }
 
   void _onHover(bool isHovering) {
     setState(() {
       isHovered = isHovering;
     });
+  }
+
+  Future<void> addMount(BuildContext context) async {
+    final selectedRemote = await remoteReader.askUserToSelectRemote(context);
+
+    if (selectedRemote == null) {
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MountInfoEditingScreen(selectedRemote: selectedRemote),
+      ),
+    );
+  }
+
+  Future<void> addRemote(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RemoteCreationScreen(parentContext: context),
+      ),
+    );
+
+    await remoteReader.getAllRemotes(force: true);
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -54,7 +92,9 @@ class _RoundPlusButtonState extends State<_RoundPlusButton> {
       onExit: (_) => _onHover(false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: _currentTab == Tab.remote
+            ? () => addRemote(context)
+            : () => addMount(context),
         child: Container(
           margin: const EdgeInsets.only(right: 20),
           height: 63,
@@ -83,7 +123,6 @@ class _TabBar extends StatefulWidget {
 }
 
 class _TabBarState extends State<_TabBar> {
-  Tab activeTab = Tab.mount;
   double mountTextWidth = 0.0;
   double remoteTextWidth = 0.0;
 
@@ -116,7 +155,7 @@ class _TabBarState extends State<_TabBar> {
   }
 
   void _toggleTab(Tab tab) {
-    setState(() => activeTab = tab);
+    setState(() => _currentTab = tab);
     widget.onToggle(tab);
   }
 
@@ -133,9 +172,9 @@ class _TabBarState extends State<_TabBar> {
             duration: const Duration(milliseconds: 250),
             curve: Curves.fastEaseInToSlowEaseOut,
             top: 4.5,
-            left: activeTab == Tab.mount ? 8 : mountTextWidth + 8,
+            left: _currentTab == Tab.mount ? 8 : mountTextWidth + 8,
             child: AnimatedContainer(
-              width: activeTab == Tab.mount ? mountTextWidth : remoteTextWidth,
+              width: _currentTab == Tab.mount ? mountTextWidth : remoteTextWidth,
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
@@ -165,7 +204,7 @@ class _TabBarState extends State<_TabBar> {
     double rightPadding,
   ) {
     return MouseRegion(
-      cursor: activeTab == tab
+      cursor: _currentTab == tab
           ? SystemMouseCursors.basic
           : SystemMouseCursors.click,
       child: GestureDetector(
@@ -176,7 +215,7 @@ class _TabBarState extends State<_TabBar> {
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: activeTab == tab ? Colors.black : Colors.white,
+              color: _currentTab == tab ? Colors.black : Colors.white,
               fontSize: 16,
             ),
             child: Text(text),

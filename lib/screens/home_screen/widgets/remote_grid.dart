@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/remote.dart';
+import '../../../services/remote_service.dart';
 import '../../../widgets/remote_picker_grid.dart';
 import '../../../widgets/remote_tile.dart';
 
-class RemoteGrid extends StatefulWidget {
-  final List<Remote> remotes;
-
-  const RemoteGrid({super.key, required this.remotes});
+class RemoteGrid extends ConsumerStatefulWidget {
+  const RemoteGrid({super.key});
 
   @override
-  State<RemoteGrid> createState() => _RemoteGridState();
+  ConsumerState<RemoteGrid> createState() => _RemoteGridState();
 }
 
-class _RemoteGridState extends State<RemoteGrid> {
+class _RemoteGridState extends ConsumerState<RemoteGrid> {
   @override
   Widget build(BuildContext context) {
-    if (widget.remotes.isEmpty) {
+    final remotes = ref.watch(RemoteService.instance);
+
+    if (remotes.isEmpty) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -39,8 +40,8 @@ class _RemoteGridState extends State<RemoteGrid> {
     }
 
     return RemotePickerGrid(
-      itemCount: widget.remotes.length,
-      itemBuilder: (_, index) => RemoteTile(remote: widget.remotes[index]),
+      itemCount: remotes.length,
+      itemBuilder: (_, index) => RemoteTile(remote: remotes[index]),
     );
   }
 }
