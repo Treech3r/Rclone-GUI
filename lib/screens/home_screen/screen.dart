@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Tab;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/mount.dart';
 import '../../services/mount_service.dart';
 import '../../widgets/rounded_button.dart';
 import '../mount_info_editing/screen.dart';
-import 'widgets/mount_tile.dart';
+import '../remote_creation_wizard/screen.dart';
 import 'widgets/custom_tab_bar.dart';
+import 'widgets/mount_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Tab currentTab = Tab.mount;
+
   List<Mount> _mounts = [];
   bool fetched = false;
 
@@ -39,6 +43,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _mounts.add(mount);
     });
+  }
+
+  Future<void> addRemote(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProviderScope(child: RemoteCreationScreen()),
+      ),
+    );
   }
 
   @override
@@ -80,7 +92,19 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Colors.deepPurpleAccent,
               child: Icon(Icons.add, color: Colors.white),
             ),
-      body: bodyContent,
+      body: Column(
+        children: [
+          CustomTabBar(
+            onTabChange: (tab) => setState(() {
+              currentTab = tab;
+            }),
+            onPlusButtonTap: () => currentTab == Tab.mount
+                ? addMount(context)
+                : addRemote(context),
+          ),
+          // bodyContent,
+        ],
+      ),
       bottomSheet: _mounts.isNotEmpty
           ? null
           : RoundedButton(
@@ -103,7 +127,6 @@ class EmptyWarning extends StatelessWidget {
       children: [
         Row(children: []),
         SizedBox(height: 40),
-        CustomTabBar(onTabChange: (_) {}, onPlusButtonTap: () {}),
         Spacer(),
         Text(
           'Um pouco vazio por aqui...',
