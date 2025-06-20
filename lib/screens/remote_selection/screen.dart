@@ -33,7 +33,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
             itemCount: remotes.length,
             itemBuilder: (_, index) => RemoteTile(
               remote: remotes[index],
-              parentContext: context,
+              overrideCallback: () => Navigator.of(context).pop(remotes[index]),
             ),
           );
         },

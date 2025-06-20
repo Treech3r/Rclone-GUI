@@ -6,14 +6,12 @@ import '../models/remote.dart';
 class RemoteTile extends StatefulWidget {
   final Remote? remote;
   final String? remoteType;
-  final BuildContext? parentContext;
   final VoidCallback? overrideCallback;
 
   RemoteTile({
     this.remote,
     String? remoteType,
     this.overrideCallback,
-    this.parentContext,
     super.key,
   }) : remoteType = remoteType ?? remote?.type {
     assert(remote != null || remoteType != null,
@@ -32,23 +30,20 @@ class _RemoteTileState extends State<RemoteTile> {
     final primaryColor = const Color(0xFF333333);
     final inversePrimaryColor = Theme.of(context).colorScheme.inversePrimary;
     return MouseRegion(
+      cursor: widget.overrideCallback != null
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
       child: GestureDetector(
-        onTap: () {
-          if (widget.overrideCallback != null) {
-            widget.overrideCallback!();
-          } else {
-            Navigator.of(widget.parentContext!).pop(widget.remote);
-          }
-        },
+        onTap: widget.overrideCallback,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 170),
           // Match GridView mainAxisExtent
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             color: isHovered ? primaryColor : inversePrimaryColor,
-            clipBehavior: Clip.hardEdge, // Clip overflow during resize
+            clipBehavior: Clip.hardEdge,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 130),
               // 170 - (20 top + 20 bottom)
@@ -84,7 +79,8 @@ class _RemoteTileState extends State<RemoteTile> {
                   if (widget.remote != null)
                     CustomText(
                       text: widget.remote!.name,
-                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                     ),
                   Opacity(
                     opacity: widget.remote == null ? 0.8 : 0.6,
