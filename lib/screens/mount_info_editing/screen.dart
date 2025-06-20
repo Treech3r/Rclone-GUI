@@ -156,7 +156,9 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.mount != null ? 'Editando mount' : 'Criando novo mount',
+          widget.mount != null
+              ? 'Editando ponto de montagem'
+              : 'Criando novo ponto de montagem',
         ),
       ),
       body: Padding(
@@ -167,18 +169,22 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           children: [
             selectedRemote == null
                 ? RoundedButton(
-                    label: 'Selecionar remote',
+                    label: 'Selecionar armazenamento para montar',
                     onPressed: () => selectRemote(context),
                   )
-                : RemoteTile(
-                    remote: selectedRemote!,
-                    overrideCallback: () => selectRemote(context),
+                : SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: RemoteTile(
+                      remote: selectedRemote!,
+                      overrideCallback: () => selectRemote(context),
+                    ),
                   ),
             SizedBox(height: 12.0),
             TextFormField(
               controller: mountNameTextController,
               decoration: InputDecoration(
-                labelText: 'Nome do mount (opcional)',
+                labelText: 'Nome do ponto de montagem (opcional)',
                 labelStyle: TextStyle(
                   fontSize: 16.0,
                 ),
@@ -224,9 +230,11 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 RoundedButton(
-                  enabledColor: Colors.purpleAccent,
+                  enabledColor: Colors.deepPurpleAccent,
                   externalPadding: const EdgeInsets.all(12.0),
-                  label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
+                  label: widget.mount != null
+                      ? 'Salvar ponto de montagem'
+                      : 'Criar ponto de montagem',
                   onPressed: () {
                     if (widget.mount != null) {
                       editMount(context);
@@ -239,14 +247,14 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
                   RoundedButton(
                     enabledColor: Colors.red,
                     externalPadding: const EdgeInsets.all(12.0),
-                    label: 'Deletar mount',
+                    label: 'Deletar ponto de montagem',
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
                           title: Text('Confirmar deleção'),
                           content: Text(
-                            'Tem certeza que deseja deletar este mount? Fique tranquilo, sua configuração do rclone e seus arquivos permanecerão intactos.',
+                            'Tem certeza que deseja deletar este ponto de montagem? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
                           ),
                           actions: [
                             Row(

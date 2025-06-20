@@ -18,7 +18,7 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Qual remote deseja montar?'),
+        title: Text('Qual armazenamento deseja montar?'),
       ),
       body: FutureBuilder(
         future: RemoteService.getAllRemotes(),
@@ -37,14 +37,6 @@ class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        tooltip: 'Configurar novo remote',
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ProviderScope(child: RemoteCreationScreen()))),
-        backgroundColor: Colors.deepPurpleAccent,
-        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

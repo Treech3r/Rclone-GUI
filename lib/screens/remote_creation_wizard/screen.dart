@@ -15,7 +15,7 @@ class RemoteCreationScreen extends ConsumerWidget {
     final remoteTypes = ref.watch(Config.remotes);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Selecione o tipo de remote')),
+      appBar: AppBar(title: const Text('Qual armazenamento deseja conectar?')),
       body: RemotePickerGrid(
         itemCount: remoteTypes.length,
         itemBuilder: (_, index) => RemoteTile(
