@@ -102,36 +102,6 @@ abstract class Config {
           return null;
         },
       ),
-      RemoteCreation(
-        type: 's3',
-        displayName: 'Amazon S3',
-        steps: [
-          RemoteCreationStep(
-            type: RemoteCreationStepType.form,
-            title: 'Enter S3 Credentials',
-            parameters: [
-              RemoteCreationTextInput(
-                key: 'access_key_id',
-                label: 'Access Key ID',
-                type: RemoteCreationInputType.text,
-                required: true,
-              ),
-              RemoteCreationTextInput(
-                key: 'secret_access_key',
-                label: 'Secret Access Key',
-                type: RemoteCreationInputType.password,
-                required: true,
-              ),
-              RemoteCreationTextInput(
-                key: 'region',
-                label: 'Region',
-                type: RemoteCreationInputType.text,
-                defaultValue: 'us-east-1',
-              ),
-            ],
-          ),
-        ],
-      ),
     ],
   );
 }
