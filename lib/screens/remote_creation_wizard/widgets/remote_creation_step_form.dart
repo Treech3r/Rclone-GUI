@@ -88,7 +88,7 @@ class RemoteCreationStepFormState extends State<RemoteCreationStepForm> {
           },
           validator: (value) {
             if (param.required && (value == null || value.isEmpty)) {
-              return '${param.label} é obrigatório';
+              return 'Selecione uma opção';
             }
             return null;
           },
@@ -103,7 +103,7 @@ class RemoteCreationStepFormState extends State<RemoteCreationStepForm> {
           initialValue: param.defaultValue,
           validator: (value) {
             if (param.required && (value == null || value.isEmpty)) {
-              return '${param.label} é obrigatório';
+              return 'Campo obrigatório';
             }
             if (value != null && double.tryParse(value) == null) {
               return 'Digite um número válido';
@@ -149,7 +149,7 @@ class CustomTextField extends StatelessWidget {
           initialValue: param.defaultValue,
           validator: (value) {
             if (param.required && (value == null || value.isEmpty)) {
-              return '${param.label} é obrigatório';
+              return 'Campo obrigatório';
             }
             return null;
           },

@@ -34,7 +34,7 @@ class _MountPointListState extends ConsumerState<MountPointList> {
             ),
             SizedBox(height: 20),
             Text(
-              'Você não criou nenhum ponto de montagem',
+              'Você não criou nenhum drive',
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),

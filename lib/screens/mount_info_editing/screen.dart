@@ -157,8 +157,8 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
       appBar: AppBar(
         title: Text(
           widget.mount != null
-              ? 'Editando ponto de montagem'
-              : 'Criando novo ponto de montagem',
+              ? 'Editando drive'
+              : 'Criando novo drive',
         ),
       ),
       body: Padding(
@@ -184,7 +184,7 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
             TextFormField(
               controller: mountNameTextController,
               decoration: InputDecoration(
-                labelText: 'Nome do ponto de montagem (opcional)',
+                labelText: 'Nome do drive (opcional)',
                 labelStyle: TextStyle(
                   fontSize: 16.0,
                 ),
@@ -231,8 +231,8 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
             enabledColor: Colors.deepPurpleAccent,
             externalPadding: const EdgeInsets.all(12.0),
             label: widget.mount != null
-                ? 'Salvar ponto de montagem'
-                : 'Criar ponto de montagem',
+                ? 'Salvar drive'
+                : 'Criar drive',
             onPressed: mountPath.isEmpty
                 ? null
                 : () {
@@ -247,14 +247,14 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
             RoundedButton(
               enabledColor: Colors.red,
               externalPadding: const EdgeInsets.all(12.0),
-              label: 'Deletar ponto de montagem',
+              label: 'Deletar drive',
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     title: Text('Confirmar deleção'),
                     content: Text(
-                      'Tem certeza que deseja deletar este ponto de montagem? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
+                      'Tem certeza que deseja deletar este drive? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
                     ),
                     actions: [
                       Row(

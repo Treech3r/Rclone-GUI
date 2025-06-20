@@ -95,7 +95,7 @@ class RemoteConfigWizardState extends ConsumerState<RemoteCreationWizard> {
                   label: state.isLoading
                       ? 'Aguardando...'
                       : notifier.isLastStep
-                          ? 'Criar Remote'
+                          ? 'Salvar'
                           : step.nextButtonText ?? 'Próximo',
                 ),
               ],

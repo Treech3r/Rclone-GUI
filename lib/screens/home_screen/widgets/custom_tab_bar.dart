@@ -126,7 +126,7 @@ class _TabBarState extends State<_TabBar> {
   double mountTextWidth = 0.0;
   double remoteTextWidth = 0.0;
 
-  static const firstTabLabel = 'Pontos de montagem';
+  static const firstTabLabel = 'Drives';
   static const secondTabLabel = 'Serviços de armazenamento';
 
   @override
