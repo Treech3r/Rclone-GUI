@@ -33,7 +33,7 @@ abstract class RcloneServer {
 
   static Future<bool> _isServerRunning() async {
     try {
-      var response = await http.post(Uri.parse('$kBaseUrl/config/listremotes'));
+      var response = await http.post(Uri.parse('$kBaseUrl/options/get'));
       return response.statusCode == 200;
     } catch (_) {
       return false;

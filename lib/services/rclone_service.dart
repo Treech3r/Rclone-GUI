@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../utils/rclone_server.dart';
 
 class RcloneService {
@@ -29,5 +31,45 @@ class RcloneService {
     }
 
     return remotes;
+  }
+
+  static Future<void> createRemote(Map<String, dynamic> parameters) async {
+    final remoteName = parameters.remove('name');
+    final remoteType = parameters.remove('type');
+
+    await RcloneServer.request(
+      '/config/create',
+      queryParameters: {
+        'name': remoteName,
+        'type': remoteType,
+        'parameters': jsonEncode(parameters),
+        'opt': jsonEncode({'nonInteractive': true})
+      },
+    );
+  }
+
+  static Future<String?> executeCliCommand(
+    String command,
+    List<String>? arguments,
+    Map<String, String>? flags,
+  ) async {
+    final response = await RcloneServer.request(
+      '/core/command',
+      queryParameters: {
+        'command': command,
+        'arg': jsonEncode(arguments),
+        'opt': jsonEncode(flags),
+      },
+    );
+
+    if (response['error']) {
+      return '';
+    }
+
+    return response['result']
+        .replaceAll(r'\n', ' ') // Remove escaped newline characters
+        .replaceAll('\n', ' ') // Replace actual newlines with spaces
+        .replaceAll(RegExp(r'\s+'), ' ') // Collapse multiple spaces into one
+        .trim(); // Remove leading/trailing spaces
   }
 }

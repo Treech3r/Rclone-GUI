@@ -65,7 +65,7 @@ class _MountTileState extends State<MountTile> {
                     : Stack(
                         children: [
                           SvgPicture.asset(
-                            widget.mount.remote!.getCommercialLogo,
+                            widget.mount.remote!.commercialLogo,
                             fit: BoxFit.scaleDown,
                             height: 50,
                           ),
@@ -95,8 +95,8 @@ class _MountTileState extends State<MountTile> {
                       opacity: 0.8,
                       child: Text(
                         widget.mount.mountPath.length == 1
-                            ? '${widget.mount.remote?.getCommercialName} (${widget.mount.mountPath}:)'
-                            : widget.mount.remote?.getCommercialName ?? '',
+                            ? '${widget.mount.remote?.commercialName} (${widget.mount.mountPath}:)'
+                            : widget.mount.remote?.commercialName ?? '',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),

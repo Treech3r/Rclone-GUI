@@ -53,4 +53,15 @@ abstract class RemoteService {
 
     _remotes = remotes.values.toList();
   }
+
+  // TODO: make this function accept more remote types
+  static Future<void> createRemote(
+    String type,
+    Map<String, dynamic> parameters,
+  ) async {
+    parameters.addAll({
+      'scope': [parameters['scope']]
+    });
+    await RcloneService.createRemote(parameters);
+  }
 }

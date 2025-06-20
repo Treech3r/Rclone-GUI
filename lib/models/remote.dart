@@ -21,11 +21,15 @@ class Remote {
     );
   }
 
-  String get getCommercialName {
-    return Remote._getCommercialName(this);
+  String get commercialName {
+    if (parentRemote != null) {
+      return commercialNameFromType(parentRemote!.type);
+    }
+
+    return Remote.commercialNameFromType(type);
   }
 
-  static String _getCommercialName(Remote remote) {
+  static String commercialNameFromType(String remoteType) {
     Map<String, String> commercialNames = {
       'drive': 'Google Drive',
       'dropbox': 'Dropbox',
@@ -80,18 +84,18 @@ class Remote {
       'union': 'União'
     };
 
-    if (remote.parentRemote != null) {
-      return _getCommercialName(remote.parentRemote!);
+    return commercialNames[remoteType] ?? 'Desconhecido';
+  }
+
+  String get commercialLogo {
+    if (parentRemote != null) {
+      return commercialLogoFromType(parentRemote!.type);
     }
 
-    return commercialNames[remote.type] ?? 'Desconhecido';
+    return commercialLogoFromType(type);
   }
 
-  String get getCommercialLogo {
-    return _getCommercialLogo(this);
-  }
-
-  static String _getCommercialLogo(Remote remote) {
+  static String commercialLogoFromType(String remoteType) {
     Set<String> availableLogos = {
       'drive',
       'dropbox',
@@ -105,11 +109,7 @@ class Remote {
       's3',
     };
 
-    if (remote.parentRemote != null) {
-      return _getCommercialLogo(remote.parentRemote!);
-    }
-
-    return 'assets/images/cloud_storage_logos/${availableLogos.contains(remote.type) ? remote.type : 'generic_cloud_logo'}.svg';
+    return 'assets/images/cloud_storage_logos/${availableLogos.contains(remoteType) ? remoteType : 'generic_cloud_logo'}.svg';
   }
 
   @override
