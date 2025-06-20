@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rclone_gui/models/remote.dart';
 
 import '../../models/mount.dart';
 import '../../services/mount_service.dart';
@@ -11,34 +10,36 @@ import 'widgets/custom_tab_bar.dart';
 import 'widgets/mount_point_list.dart';
 import 'widgets/remote_grid.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   Tab currentTab = Tab.mount;
 
+  late RemoteService remoteReader;
+
   List<Mount> _mounts = [];
-  List<Remote> _remotes = [];
 
   @override
   void initState() {
-    MountService.getAllMounts().then((mounts) => setState(() {
+    remoteReader = ref.read(RemoteService.instance.notifier);
+
+    MountService.getAllMounts().then((mounts) =>
+        setState(() {
           _mounts = mounts;
         }));
 
-    RemoteService.getAllRemotes().then((remotes) => setState(() {
-          _remotes = remotes;
-        }));
+    remoteReader.getAllRemotes();
 
     super.initState();
   }
 
   Future<void> addMount(BuildContext context) async {
-    final selectedRemote = await RemoteService.selectRemote(context);
+    final selectedRemote = await remoteReader.askUserToSelectRemote(context);
 
     if (selectedRemote == null) {
       return;
@@ -60,13 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> addRemote(BuildContext context) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ProviderScope(child: RemoteCreationScreen()),
+        builder: (_) => RemoteCreationScreen(parentContext: context),
       ),
     );
+
+    await remoteReader.getAllRemotes(force: true);
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final remotes = ref.watch(RemoteService.instance);
+
     return Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -74,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 60),
           CustomTabBar(
             onTabChange: (tab) => setState(() => currentTab = tab),
-            onPlusButtonTap: () => currentTab == Tab.mount
+            onPlusButtonTap: () =>
+            currentTab == Tab.mount
                 ? addMount(context)
                 : addRemote(context),
           ),
@@ -82,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: currentTab == Tab.mount
                 ? MountPointList(mounts: _mounts)
-                : RemoteGrid(remotes: _remotes),
+                : RemoteGrid(remotes: remotes),
           ),
         ],
       ),

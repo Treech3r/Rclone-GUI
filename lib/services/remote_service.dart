@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/remote.dart';
 import '../screens/remote_selection/screen.dart';
 import 'rclone_service.dart';
 
-abstract class RemoteService {
-  static List<Remote> _remotes = [];
+class RemoteService extends StateNotifier<List<Remote>> {
+  RemoteService._() : super([]);
 
-  static Future<List<Remote>> getAllRemotes() async {
-    if (_remotes.isEmpty) {
+  static dynamic _instance;
+
+  static StateNotifierProvider<RemoteService, List<Remote>> get instance {
+    _instance ??= StateNotifierProvider<RemoteService, List<Remote>>((ref) {
+      return RemoteService._();
+    });
+
+    return _instance;
+  }
+
+  Future<List<Remote>> getAllRemotes({bool force = false}) async {
+    if (force || state.isEmpty) {
       await _getAllRemotes();
     }
 
-    return _remotes;
+    return state;
   }
 
-  static Future<void> _getAllRemotes() async {
+  Future<void> _getAllRemotes() async {
     final List<Map<String, dynamic>> remotesMap =
         await RcloneService.getAllRemotes();
 
@@ -54,21 +65,14 @@ abstract class RemoteService {
       }
     }
 
-    _remotes = remotes.values.toList();
+    state = remotes.values.toList();
   }
 
-  // TODO: make this function accept more remote types
-  static Future<void> createRemote(
-    String type,
-    Map<String, dynamic> parameters,
-  ) async {
-    parameters.addAll({
-      'scope': [parameters['scope']]
-    });
+  Future<void> createRemote(Map<String, dynamic> parameters) async {
     await RcloneService.createRemote(parameters);
   }
 
-  static Future<Remote?> selectRemote(BuildContext context) async {
+  Future<Remote?> askUserToSelectRemote(BuildContext context) async {
     return await Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => RemoteSelectionScreen()));
   }

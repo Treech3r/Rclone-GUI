@@ -3,40 +3,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/remote_service.dart';
 import '../../widgets/remote_picker_grid.dart';
-import '../remote_creation_wizard/screen.dart';
 import '../../widgets/remote_tile.dart';
 
-class RemoteSelectionScreen extends StatefulWidget {
+class RemoteSelectionScreen extends ConsumerStatefulWidget {
   const RemoteSelectionScreen({super.key});
 
   @override
-  State<RemoteSelectionScreen> createState() => _RemoteSelectionScreenState();
+  ConsumerState<RemoteSelectionScreen> createState() =>
+      _RemoteSelectionScreenState();
 }
 
-class _RemoteSelectionScreenState extends State<RemoteSelectionScreen> {
+class _RemoteSelectionScreenState extends ConsumerState<RemoteSelectionScreen> {
   @override
   Widget build(BuildContext context) {
+    final remotes = ref.read(RemoteService.instance);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Qual armazenamento deseja montar?'),
       ),
-      body: FutureBuilder(
-        future: RemoteService.getAllRemotes(),
-        builder: (_, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: Text('Lendo configuração do rclone...'));
-          }
-
-          var remotes = snapshot.data!;
-
-          return RemotePickerGrid(
-            itemCount: remotes.length,
-            itemBuilder: (_, index) => RemoteTile(
-              remote: remotes[index],
-              overrideCallback: () => Navigator.of(context).pop(remotes[index]),
-            ),
-          );
-        },
+      body: RemotePickerGrid(
+        itemCount: remotes.length,
+        itemBuilder: (_, index) => RemoteTile(
+          remote: remotes[index],
+          overrideCallback: () => Navigator.of(context).pop(remotes[index]),
+        ),
       ),
     );
   }

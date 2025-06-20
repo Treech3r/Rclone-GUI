@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../models/mount.dart';
 import '../models/remote.dart';
 import '../utils/rclone_server.dart';
@@ -40,7 +42,7 @@ class MountService {
   }
 
   static Future<List<Mount>> _getAllMounts() async {
-    var remotes = await RemoteService.getAllRemotes();
+    var remotes = await ProviderContainer().read(RemoteService.instance.notifier).getAllRemotes();
     var result = await SqfliteService.getAllMounts();
 
     Map<String, Mount> mountPathAndRemote = {};

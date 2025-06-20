@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'screens/home_screen/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
@@ -12,7 +13,7 @@ void main() async {
 
   final serverStarted = await RcloneServer.start();
 
-  runApp(MyApp(serverStarted));
+  runApp(ProviderScope(child: MyApp(serverStarted)));
 }
 
 class MyApp extends StatelessWidget {
