@@ -84,6 +84,7 @@ class _RemoteTileState extends State<RemoteTile> {
                   if (widget.remote != null)
                     CustomText(
                       text: widget.remote!.name,
+                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                     ),
                   Opacity(
                     opacity: widget.remote == null ? 0.8 : 0.6,
@@ -118,10 +119,12 @@ class _RemoteTileState extends State<RemoteTile> {
 class CustomText extends StatelessWidget {
   final String text;
   final Color? color;
+  final TextStyle? style;
 
   const CustomText({
     required this.text,
     this.color,
+    this.style,
     super.key,
   });
 
@@ -132,9 +135,9 @@ class CustomText extends StatelessWidget {
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
-      style: color == null
-          ? null
-          : Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+      style: style == null
+          ? Theme.of(context).textTheme.bodyMedium?.copyWith(color: color)
+          : style?.copyWith(color: color),
     );
   }
 }

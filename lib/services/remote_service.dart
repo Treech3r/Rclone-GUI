@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+
 import '../models/remote.dart';
+import '../screens/remote_selection/screen.dart';
 import 'rclone_service.dart';
 
 abstract class RemoteService {
@@ -63,5 +66,10 @@ abstract class RemoteService {
       'scope': [parameters['scope']]
     });
     await RcloneService.createRemote(parameters);
+  }
+
+  static Future<Remote?> selectRemote(BuildContext context) async {
+    return await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => RemoteSelectionScreen()));
   }
 }

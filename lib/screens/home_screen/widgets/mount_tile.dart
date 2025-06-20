@@ -136,7 +136,7 @@ class _MountTileState extends State<MountTile> {
                             : mount,
                       ),
                       RoundedButton(
-                        label: 'Editar mount',
+                        label: 'Editar',
                         onPressed: isMounting
                             ? null
                             : () {

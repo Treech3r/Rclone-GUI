@@ -38,17 +38,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> addMount(BuildContext context) async {
-    Mount? mount = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => MountInfoEditingScreen()),
-    );
+    final selectedRemote = await RemoteService.selectRemote(context);
 
-    if (mount == null) {
+    if (selectedRemote == null) {
       return;
     }
 
-    setState(() {
-      _mounts.add(mount);
-    });
+    Mount? mount = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MountInfoEditingScreen(selectedRemote: selectedRemote),
+      ),
+    );
+
+    if (mount != null) {
+      setState(() {
+        _mounts.add(mount);
+      });
+    }
   }
 
   Future<void> addRemote(BuildContext context) async {

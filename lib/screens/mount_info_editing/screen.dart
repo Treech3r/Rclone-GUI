@@ -13,11 +13,13 @@ import '../../widgets/remote_tile.dart';
 
 class MountInfoEditingScreen extends StatefulWidget {
   final Mount? mount;
+  final Remote? selectedRemote;
   final VoidCallback? editCallback;
   final VoidCallback? deleteCallback;
 
   const MountInfoEditingScreen({
     this.mount,
+    this.selectedRemote,
     this.editCallback,
     this.deleteCallback,
     super.key,
@@ -31,7 +33,7 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
   List<String> windowsDriveLetters = [];
   String mountPath = '';
   bool readOnly = false;
-  Remote? selectedRemote;
+  late Remote selectedRemote;
   final mountNameTextController = TextEditingController();
 
   @override
@@ -44,10 +46,14 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       super.initState();
     }
 
+    if (widget.selectedRemote != null) {
+      selectedRemote = widget.selectedRemote!;
+    }
+
     if (widget.mount != null) {
       mountPath = widget.mount!.mountPath;
       readOnly = !widget.mount!.allowWrite;
-      selectedRemote = widget.mount!.remote;
+      selectedRemote = widget.mount!.remote!;
       mountNameTextController.text = widget.mount!.name ?? '';
     }
   }
@@ -167,19 +173,19 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            selectedRemote == null
-                ? RoundedButton(
-                    label: 'Selecionar armazenamento para montar',
-                    onPressed: () => selectRemote(context),
-                  )
-                : SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: RemoteTile(
-                      remote: selectedRemote!,
-                      overrideCallback: () => selectRemote(context),
-                    ),
-                  ),
+            Text('Armazenamento que será montado:'),
+            SizedBox(height: 12.0),
+            SizedBox(
+              width: 150,
+              height: 150,
+              child: RemoteTile(
+                remote: selectedRemote,
+                overrideCallback: () => selectRemote(context),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            Text(
+                'Você pode clicar no armazenamento acima para trocá-lo por outro armazenamento'),
             SizedBox(height: 12.0),
             TextFormField(
               controller: mountNameTextController,
@@ -224,63 +230,63 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           ],
         ),
       ),
-      bottomSheet: selectedRemote == null || mountPath.isEmpty
-          ? null
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RoundedButton(
-                  enabledColor: Colors.deepPurpleAccent,
-                  externalPadding: const EdgeInsets.all(12.0),
-                  label: widget.mount != null
-                      ? 'Salvar ponto de montagem'
-                      : 'Criar ponto de montagem',
-                  onPressed: () {
+      bottomSheet: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          RoundedButton(
+            enabledColor: Colors.deepPurpleAccent,
+            externalPadding: const EdgeInsets.all(12.0),
+            label: widget.mount != null
+                ? 'Salvar ponto de montagem'
+                : 'Criar ponto de montagem',
+            onPressed: mountPath.isEmpty
+                ? null
+                : () {
                     if (widget.mount != null) {
                       editMount(context);
                     } else {
                       createMount(context);
                     }
                   },
-                ),
-                if (widget.mount != null)
-                  RoundedButton(
-                    enabledColor: Colors.red,
-                    externalPadding: const EdgeInsets.all(12.0),
-                    label: 'Deletar ponto de montagem',
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text('Confirmar deleção'),
-                          content: Text(
-                            'Tem certeza que deseja deletar este ponto de montagem? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
+          ),
+          if (widget.mount != null)
+            RoundedButton(
+              enabledColor: Colors.red,
+              externalPadding: const EdgeInsets.all(12.0),
+              label: 'Deletar ponto de montagem',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('Confirmar deleção'),
+                    content: Text(
+                      'Tem certeza que deseja deletar este ponto de montagem? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
+                    ),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RoundedButton(
+                            label: 'Cancelar',
+                            onPressed: () => Navigator.of(ctx).pop(),
                           ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RoundedButton(
-                                  label: 'Cancelar',
-                                  onPressed: () => Navigator.of(ctx).pop(),
-                                ),
-                                RoundedButton(
-                                  label: 'Deletar',
-                                  onPressed: () {
-                                    deleteMount(context);
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  enabledColor: Colors.red,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    },
+                          RoundedButton(
+                            label: 'Deletar',
+                            onPressed: () {
+                              deleteMount(context);
+                              Navigator.of(ctx).pop();
+                            },
+                            enabledColor: Colors.red,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-              ],
+                );
+              },
             ),
+        ],
+      ),
     );
   }
 }
