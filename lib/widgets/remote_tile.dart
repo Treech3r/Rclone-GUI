@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../models/remote.dart';
+import '../models/remote.dart';
 
 class RemoteTile extends StatefulWidget {
   final Remote? remote;

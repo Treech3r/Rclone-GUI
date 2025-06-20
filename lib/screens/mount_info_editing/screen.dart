@@ -9,7 +9,7 @@ import '../../services/sqflite_service.dart';
 import '../../utils/windows.dart';
 import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
-import '../remote_selection/widgets/remote_tile.dart';
+import '../../widgets/remote_tile.dart';
 
 class MountInfoEditingScreen extends StatefulWidget {
   final Mount? mount;

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rclone_gui/models/remote.dart';
 
 import '../../models/mount.dart';
 import '../../services/mount_service.dart';
+import '../../services/remote_service.dart';
 import '../mount_info_editing/screen.dart';
 import '../remote_creation_wizard/screen.dart';
 import 'widgets/custom_tab_bar.dart';
 import 'widgets/mount_point_list.dart';
+import 'widgets/remote_grid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,13 +22,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Tab currentTab = Tab.mount;
 
   List<Mount> _mounts = [];
-  bool fetched = false;
+  List<Remote> _remotes = [];
 
   @override
   void initState() {
     MountService.getAllMounts().then((mounts) => setState(() {
           _mounts = mounts;
-          fetched = true;
+        }));
+
+    RemoteService.getAllRemotes().then((remotes) => setState(() {
+          _remotes = remotes;
         }));
 
     super.initState();
@@ -70,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: currentTab == Tab.mount
                 ? MountPointList(mounts: _mounts)
-                : Container(),
+                : RemoteGrid(remotes: _remotes),
           ),
         ],
       ),

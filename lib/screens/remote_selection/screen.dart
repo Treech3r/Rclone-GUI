@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/remote_service.dart';
 import '../../widgets/remote_picker_grid.dart';
 import '../remote_creation_wizard/screen.dart';
-import 'widgets/remote_tile.dart';
+import '../../widgets/remote_tile.dart';
 
 class RemoteSelectionScreen extends StatefulWidget {
   const RemoteSelectionScreen({super.key});

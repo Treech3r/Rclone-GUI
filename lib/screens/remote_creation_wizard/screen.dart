@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/remotes.dart';
 import '../../services/rclone_service.dart';
 import '../../widgets/remote_picker_grid.dart';
-import '../remote_selection/widgets/remote_tile.dart';
+import '../../widgets/remote_tile.dart';
 import 'remote_creation_wizard.dart';
 
 class RemoteCreationScreen extends ConsumerWidget {
