@@ -2,34 +2,31 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/mount.dart';
 import '../../models/remote.dart';
-import '../../services/sqflite_service.dart';
+import '../../services/mount_service.dart';
 import '../../utils/windows.dart';
+import '../../widgets/remote_tile.dart';
 import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
-import '../../widgets/remote_tile.dart';
 
-class MountInfoEditingScreen extends StatefulWidget {
+class MountInfoEditingScreen extends ConsumerStatefulWidget {
   final Mount? mount;
   final Remote? selectedRemote;
-  final VoidCallback? editCallback;
-  final VoidCallback? deleteCallback;
 
   const MountInfoEditingScreen({
     this.mount,
     this.selectedRemote,
-    this.editCallback,
-    this.deleteCallback,
     super.key,
   });
 
   @override
-  State<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
+  ConsumerState<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
 }
 
-class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
+class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen> {
   List<String> windowsDriveLetters = [];
   String mountPath = '';
   bool readOnly = false;
@@ -98,13 +95,13 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       name: mountNameTextController.text.isNotEmpty
           ? mountNameTextController.text
           : null,
-      remote: selectedRemote!,
+      remote: selectedRemote,
       remotePath: '',
       mountPath: mountPath,
       allowWrite: !readOnly,
     );
 
-    await SqfliteService.insertMount(mount);
+    await ref.read(MountService.instance.notifier).createMount(mount);
 
     if (context.mounted) {
       Navigator.of(context).pop(mount);
@@ -112,7 +109,7 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
   }
 
   Future<void> editMount(BuildContext context) async {
-    widget.mount!.remote = selectedRemote!;
+    widget.mount!.remote = selectedRemote;
     if (mountNameTextController.text.trim().isEmpty) {
       widget.mount?.name = null;
     } else {
@@ -120,18 +117,15 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
     }
     widget.mount!.allowWrite = !readOnly;
 
-    await SqfliteService.updateMount(widget.mount!);
-
-    widget.editCallback!();
+    await ref.read(MountService.instance.notifier).editMount(widget.mount!);
 
     if (context.mounted) {
-      Navigator.of(context).pop(widget.mount!);
+      Navigator.of(context).pop();
     }
   }
 
   Future<void> deleteMount(BuildContext context) async {
-    SqfliteService.deleteMount(widget.mount!);
-    widget.deleteCallback!();
+    await ref.read(MountService.instance.notifier).deleteMount(widget.mount!);
 
     if (context.mounted) {
       Navigator.of(context).pop(widget.mount!);

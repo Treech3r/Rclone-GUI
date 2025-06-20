@@ -6,15 +6,25 @@ import '../utils/rclone_server.dart';
 import 'remote_service.dart';
 import 'sqflite_service.dart';
 
-class MountService {
-  static List<Mount> _mounts = [];
+class MountService extends StateNotifier<List<Mount>> {
+  MountService._(super.createNotifier);
 
-  static Future<List<Mount>> getAllMounts() async {
-    if (_mounts.isEmpty) {
-      _mounts = await _getAllMounts();
+  Future<List<Mount>> getAllMounts() async {
+    if (state.isEmpty) {
+      state = await _getAllMounts();
     }
 
-    return _mounts;
+    return state;
+  }
+
+  static dynamic _instance;
+
+  static StateNotifierProvider<MountService, List<Mount>> get instance {
+    _instance ??= StateNotifierProvider<MountService, List<Mount>>((ref) {
+      return MountService._([]);
+    });
+
+    return _instance;
   }
 
   static Future<void> mount(Mount mount) async {
@@ -41,8 +51,25 @@ class MountService {
     );
   }
 
-  static Future<List<Mount>> _getAllMounts() async {
-    var remotes = await ProviderContainer().read(RemoteService.instance.notifier).getAllRemotes();
+  Future<void> createMount(Mount mount) async {
+    await SqfliteService.insertMount(mount);
+    state = [...state, mount];
+  }
+
+  Future<void> editMount(Mount mount) async {
+    await SqfliteService.updateMount(mount);
+    state = [...state];
+  }
+
+  Future<void> deleteMount(Mount mount) async {
+    await SqfliteService.deleteMount(mount);
+    state = state.where((m) => m != mount).toList();
+  }
+
+  Future<List<Mount>> _getAllMounts() async {
+    var remotes = await ProviderContainer()
+        .read(RemoteService.instance.notifier)
+        .getAllRemotes();
     var result = await SqfliteService.getAllMounts();
 
     Map<String, Mount> mountPathAndRemote = {};
@@ -50,7 +77,7 @@ class MountService {
     for (var mountJson in result) {
       Remote? remote = remotes.firstWhere((a) => a.name == mountJson['remote']);
       Mount mount = Mount.fromJson({...mountJson, 'remote': remote});
-      _mounts.add(mount);
+      state = [...state, mount];
       mountPathAndRemote[mountJson['mountPath'] as String] = mount;
     }
 
@@ -58,7 +85,7 @@ class MountService {
       mountPathAndRemote[mountPathInUse]?.isMounted.value = true;
     }
 
-    return _mounts;
+    return state;
   }
 
   static Future<List<String>> _getMountPointsCurrentlyInUse() async {

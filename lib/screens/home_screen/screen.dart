@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/mount.dart';
-import '../../services/mount_service.dart';
 import '../../services/remote_service.dart';
 import '../mount_info_editing/screen.dart';
 import '../remote_creation_wizard/screen.dart';
@@ -22,17 +20,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   late RemoteService remoteReader;
 
-  List<Mount> _mounts = [];
 
   @override
   void initState() {
     remoteReader = ref.read(RemoteService.instance.notifier);
-
-    MountService.getAllMounts().then((mounts) =>
-        setState(() {
-          _mounts = mounts;
-        }));
-
     remoteReader.getAllRemotes();
 
     super.initState();
@@ -45,17 +36,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return;
     }
 
-    Mount? mount = await Navigator.of(context).push(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => MountInfoEditingScreen(selectedRemote: selectedRemote),
       ),
     );
-
-    if (mount != null) {
-      setState(() {
-        _mounts.add(mount);
-      });
-    }
   }
 
   Future<void> addRemote(BuildContext context) async {
@@ -83,15 +68,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           SizedBox(height: 60),
           CustomTabBar(
             onTabChange: (tab) => setState(() => currentTab = tab),
-            onPlusButtonTap: () =>
-            currentTab == Tab.mount
+            onPlusButtonTap: () => currentTab == Tab.mount
                 ? addMount(context)
                 : addRemote(context),
           ),
           SizedBox(height: 60),
           Expanded(
             child: currentTab == Tab.mount
-                ? MountPointList(mounts: _mounts)
+                ? MountPointList()
                 : RemoteGrid(remotes: remotes),
           ),
         ],
