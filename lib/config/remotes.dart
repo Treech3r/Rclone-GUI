@@ -16,13 +16,13 @@ abstract class Config {
             type: RemoteCreationStepType.form,
             title: 'Informações básicas',
             description:
-                'Todos os valores são opcionais, exceto o nome do remote.',
+                'Todos os valores são opcionais, exceto o nome.',
             parameters: [
               RemoteCreationTextInput(
                 key: 'name',
-                label: 'Nome do Remote',
+                label: 'Dê um nome para o seu Google Drive',
                 hint:
-                    'Este é apenas um apelido para lhe ajudar a identificar o remote. É útil para diferenciar múltiplos remotes do mesmo tipo.',
+                    'É possível conectar várias contas do Google Drive simultaneamente, então você precisa nomear cada conta para lhe ajudar a identificar no futuro.',
                 type: RemoteCreationInputType.text,
                 required: true,
               ),
@@ -68,15 +68,15 @@ abstract class Config {
                 type: RemoteCreationInputType.dropdown,
                 options: {
                   'drive':
-                      'Acesso total aos arquivos, exceto à pasta especial de dados de aplicativos.',
+                      'Acesso total aos arquivos.',
                   'drive.readonly':
                       'Acesso somente de leitura (metadados e conteúdos dos arquivos).',
                   'drive.file':
                       'Acesso somente a arquivos criados pelo próprio rclone.',
                   'drive.appfolder':
-                      'Acesso de escrita e leitura à pasta especial de dados de aplicativos. Estes arquivos não são visíveis no site do Google Drive.',
+                      'Acesso de escrita e leitura somente à pasta especial de dados de aplicativos. Estes arquivos não são visíveis no site do Google Drive.',
                   'drive.metadata.readonly':
-                      'Acesso somente de leitura aos metadados dos arquivos. Não permite ver o conteúdo dos arquivos ou fazer download.'
+                      'Acesso somente de leitura somente aos metadados dos arquivos. Não permite ver o conteúdo dos arquivos ou fazer download.'
                 },
                 defaultValue: 'drive',
               ),
