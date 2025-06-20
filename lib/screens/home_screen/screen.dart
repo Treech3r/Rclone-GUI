@@ -5,15 +5,16 @@ import '../../services/mount_service.dart';
 import '../../widgets/rounded_button.dart';
 import '../mount_info_editing/screen.dart';
 import 'widgets/mount_tile.dart';
+import 'widgets/custom_tab_bar.dart';
 
-class MountsScreen extends StatefulWidget {
-  const MountsScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<MountsScreen> createState() => _MountsScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MountsScreenState extends State<MountsScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   List<Mount> _mounts = [];
   bool fetched = false;
 
@@ -98,9 +99,12 @@ class EmptyWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Row(children: []),
+        SizedBox(height: 40),
+        CustomTabBar(onTabChange: (_) {}, onPlusButtonTap: () {}),
+        Spacer(),
         Text(
           'Um pouco vazio por aqui...',
           style: Theme.of(context).textTheme.headlineMedium,
@@ -113,10 +117,14 @@ class EmptyWarning extends StatelessWidget {
         ),
         SizedBox(height: 20),
         Text(
-          'Que tal criar seu primeiro mount?',
+          'Que tal criar seu primeiro ponto de montagem?',
           style: Theme.of(context).textTheme.headlineMedium,
           textAlign: TextAlign.center,
         ),
+        Spacer(
+          flex: 1,
+        ),
+        SizedBox(height: 20),
       ],
     );
   }
