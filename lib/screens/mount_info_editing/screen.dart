@@ -2,36 +2,35 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/mount.dart';
 import '../../models/remote.dart';
-import '../../services/sqflite_service.dart';
+import '../../services/mount_service.dart';
 import '../../utils/windows.dart';
+import '../../widgets/remote_tile.dart';
 import '../../widgets/rounded_button.dart';
 import '../remote_selection/screen.dart';
-import '../remote_selection/widgets/remote_tile.dart';
 
-class MountInfoEditingScreen extends StatefulWidget {
+class MountInfoEditingScreen extends ConsumerStatefulWidget {
   final Mount? mount;
-  final VoidCallback? editCallback;
-  final VoidCallback? deleteCallback;
+  final Remote? selectedRemote;
 
   const MountInfoEditingScreen({
     this.mount,
-    this.editCallback,
-    this.deleteCallback,
+    this.selectedRemote,
     super.key,
   });
 
   @override
-  State<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
+  ConsumerState<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
 }
 
-class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
+class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen> {
   List<String> windowsDriveLetters = [];
   String mountPath = '';
   bool readOnly = false;
-  Remote? selectedRemote;
+  late Remote selectedRemote;
   final mountNameTextController = TextEditingController();
 
   @override
@@ -44,10 +43,14 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       super.initState();
     }
 
+    if (widget.selectedRemote != null) {
+      selectedRemote = widget.selectedRemote!;
+    }
+
     if (widget.mount != null) {
       mountPath = widget.mount!.mountPath;
       readOnly = !widget.mount!.allowWrite;
-      selectedRemote = widget.mount!.remote;
+      selectedRemote = widget.mount!.remote!;
       mountNameTextController.text = widget.mount!.name ?? '';
     }
   }
@@ -92,13 +95,13 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
       name: mountNameTextController.text.isNotEmpty
           ? mountNameTextController.text
           : null,
-      remote: selectedRemote!,
+      remote: selectedRemote,
       remotePath: '',
       mountPath: mountPath,
       allowWrite: !readOnly,
     );
 
-    await SqfliteService.insertMount(mount);
+    await ref.read(MountService.instance.notifier).createMount(mount);
 
     if (context.mounted) {
       Navigator.of(context).pop(mount);
@@ -106,7 +109,7 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
   }
 
   Future<void> editMount(BuildContext context) async {
-    widget.mount!.remote = selectedRemote!;
+    widget.mount!.remote = selectedRemote;
     if (mountNameTextController.text.trim().isEmpty) {
       widget.mount?.name = null;
     } else {
@@ -114,18 +117,15 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
     }
     widget.mount!.allowWrite = !readOnly;
 
-    await SqfliteService.updateMount(widget.mount!);
-
-    widget.editCallback!();
+    await ref.read(MountService.instance.notifier).editMount(widget.mount!);
 
     if (context.mounted) {
-      Navigator.of(context).pop(widget.mount!);
+      Navigator.of(context).pop();
     }
   }
 
   Future<void> deleteMount(BuildContext context) async {
-    SqfliteService.deleteMount(widget.mount!);
-    widget.deleteCallback!();
+    await ref.read(MountService.instance.notifier).deleteMount(widget.mount!);
 
     if (context.mounted) {
       Navigator.of(context).pop(widget.mount!);
@@ -156,7 +156,9 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.mount != null ? 'Editando mount' : 'Criando novo mount',
+          widget.mount != null
+              ? 'Editando ponto de montagem'
+              : 'Criando novo ponto de montagem',
         ),
       ),
       body: Padding(
@@ -165,20 +167,24 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            selectedRemote == null
-                ? RoundedButton(
-                    label: 'Selecionar remote',
-                    onPressed: () => selectRemote(context),
-                  )
-                : RemoteTile(
-                    remote: selectedRemote!,
-                    overrideCallback: () => selectRemote(context),
-                  ),
+            Text('Armazenamento que será montado:'),
+            SizedBox(height: 12.0),
+            SizedBox(
+              width: 150,
+              height: 150,
+              child: RemoteTile(
+                remote: selectedRemote,
+                overrideCallback: () => selectRemote(context),
+              ),
+            ),
+            SizedBox(height: 12.0),
+            Text(
+                'Você pode clicar no armazenamento acima para trocá-lo por outro armazenamento'),
             SizedBox(height: 12.0),
             TextFormField(
               controller: mountNameTextController,
               decoration: InputDecoration(
-                labelText: 'Nome do mount (opcional)',
+                labelText: 'Nome do ponto de montagem (opcional)',
                 labelStyle: TextStyle(
                   fontSize: 16.0,
                 ),
@@ -218,61 +224,63 @@ class _MountInfoEditingScreenState extends State<MountInfoEditingScreen> {
           ],
         ),
       ),
-      bottomSheet: selectedRemote == null || mountPath.isEmpty
-          ? null
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RoundedButton(
-                  enabledColor: Colors.purpleAccent,
-                  externalPadding: const EdgeInsets.all(12.0),
-                  label: widget.mount != null ? 'Salvar mount' : 'Criar mount',
-                  onPressed: () {
+      bottomSheet: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          RoundedButton(
+            enabledColor: Colors.deepPurpleAccent,
+            externalPadding: const EdgeInsets.all(12.0),
+            label: widget.mount != null
+                ? 'Salvar ponto de montagem'
+                : 'Criar ponto de montagem',
+            onPressed: mountPath.isEmpty
+                ? null
+                : () {
                     if (widget.mount != null) {
                       editMount(context);
                     } else {
                       createMount(context);
                     }
                   },
-                ),
-                if (widget.mount != null)
-                  RoundedButton(
-                    enabledColor: Colors.red,
-                    externalPadding: const EdgeInsets.all(12.0),
-                    label: 'Deletar mount',
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text('Confirmar deleção'),
-                          content: Text(
-                            'Tem certeza que deseja deletar este mount? Fique tranquilo, sua configuração do rclone e seus arquivos permanecerão intactos.',
+          ),
+          if (widget.mount != null)
+            RoundedButton(
+              enabledColor: Colors.red,
+              externalPadding: const EdgeInsets.all(12.0),
+              label: 'Deletar ponto de montagem',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text('Confirmar deleção'),
+                    content: Text(
+                      'Tem certeza que deseja deletar este ponto de montagem? Fique tranquilo, seus arquivos não serão deletados e sua configuração do rclone não será afetada.',
+                    ),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RoundedButton(
+                            label: 'Cancelar',
+                            onPressed: () => Navigator.of(ctx).pop(),
                           ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RoundedButton(
-                                  label: 'Cancelar',
-                                  onPressed: () => Navigator.of(ctx).pop(),
-                                ),
-                                RoundedButton(
-                                  label: 'Deletar',
-                                  onPressed: () {
-                                    deleteMount(context);
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  enabledColor: Colors.red,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    },
+                          RoundedButton(
+                            label: 'Deletar',
+                            onPressed: () {
+                              deleteMount(context);
+                              Navigator.of(ctx).pop();
+                            },
+                            enabledColor: Colors.red,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-              ],
+                );
+              },
             ),
+        ],
+      ),
     );
   }
 }

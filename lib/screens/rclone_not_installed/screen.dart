@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../utils/rclone_server.dart';
 import '../../widgets/rounded_button.dart';
-import '../mounts_screen/screen.dart';
+import '../home_screen/screen.dart';
 
 class CouldNotStartServerScreen extends StatelessWidget {
   late final String message;
@@ -113,6 +113,6 @@ class _TryAgainButtonState extends State<TryAgainButton> {
 
   void navigateToHomePage(BuildContext context) {
     Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (_) => MountsScreen()));
+        .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
   }
 }

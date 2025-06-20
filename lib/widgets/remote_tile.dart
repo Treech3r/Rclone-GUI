@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../models/remote.dart';
+import '../models/remote.dart';
 
 class RemoteTile extends StatefulWidget {
   final Remote? remote;
   final String? remoteType;
-  final BuildContext? parentContext;
   final VoidCallback? overrideCallback;
 
   RemoteTile({
     this.remote,
     String? remoteType,
     this.overrideCallback,
-    this.parentContext,
     super.key,
   }) : remoteType = remoteType ?? remote?.type {
     assert(remote != null || remoteType != null,
@@ -32,23 +30,20 @@ class _RemoteTileState extends State<RemoteTile> {
     final primaryColor = const Color(0xFF333333);
     final inversePrimaryColor = Theme.of(context).colorScheme.inversePrimary;
     return MouseRegion(
+      cursor: widget.overrideCallback != null
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
       child: GestureDetector(
-        onTap: () {
-          if (widget.overrideCallback != null) {
-            widget.overrideCallback!();
-          } else {
-            Navigator.of(widget.parentContext!).pop(widget.remote);
-          }
-        },
+        onTap: widget.overrideCallback,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 170),
           // Match GridView mainAxisExtent
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             color: isHovered ? primaryColor : inversePrimaryColor,
-            clipBehavior: Clip.hardEdge, // Clip overflow during resize
+            clipBehavior: Clip.hardEdge,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 130),
               // 170 - (20 top + 20 bottom)
@@ -84,6 +79,8 @@ class _RemoteTileState extends State<RemoteTile> {
                   if (widget.remote != null)
                     CustomText(
                       text: widget.remote!.name,
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                     ),
                   Opacity(
                     opacity: widget.remote == null ? 0.8 : 0.6,
@@ -118,10 +115,12 @@ class _RemoteTileState extends State<RemoteTile> {
 class CustomText extends StatelessWidget {
   final String text;
   final Color? color;
+  final TextStyle? style;
 
   const CustomText({
     required this.text,
     this.color,
+    this.style,
     super.key,
   });
 
@@ -132,9 +131,9 @@ class CustomText extends StatelessWidget {
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
-      style: color == null
-          ? null
-          : Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+      style: style == null
+          ? Theme.of(context).textTheme.bodyMedium?.copyWith(color: color)
+          : style?.copyWith(color: color),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'screens/mounts_screen/screen.dart';
+import 'screens/home_screen/screen.dart';
 import 'screens/rclone_not_installed/screen.dart';
 import 'services/sqflite_service.dart';
 import 'utils/rclone_server.dart';
@@ -12,7 +13,7 @@ void main() async {
 
   final serverStarted = await RcloneServer.start();
 
-  runApp(MyApp(serverStarted));
+  runApp(ProviderScope(child: MyApp(serverStarted)));
 }
 
 class MyApp extends StatelessWidget {
@@ -37,8 +38,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
       ),
-      home:
-          rcloneInstalled ? const MountsScreen() : CouldNotStartServerScreen(),
+      home: rcloneInstalled ? const HomeScreen() : CouldNotStartServerScreen(),
     );
   }
 }

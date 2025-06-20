@@ -8,13 +8,9 @@ import '../../mount_info_editing/screen.dart';
 
 class MountTile extends StatefulWidget {
   final Mount mount;
-  final VoidCallback editCallback;
-  final VoidCallback deleteCallback;
 
   const MountTile(
     this.mount, {
-    required this.editCallback,
-    required this.deleteCallback,
     super.key,
   });
 
@@ -136,7 +132,7 @@ class _MountTileState extends State<MountTile> {
                             : mount,
                       ),
                       RoundedButton(
-                        label: 'Editar mount',
+                        label: 'Editar',
                         onPressed: isMounting
                             ? null
                             : () {
@@ -144,8 +140,6 @@ class _MountTileState extends State<MountTile> {
                                   MaterialPageRoute(
                                     builder: (_) => MountInfoEditingScreen(
                                       mount: widget.mount,
-                                      editCallback: widget.editCallback,
-                                      deleteCallback: widget.deleteCallback,
                                     ),
                                   ),
                                 );
