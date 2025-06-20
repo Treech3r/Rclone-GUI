@@ -2,47 +2,38 @@
 
 Projeto criado com o intuito de facilitar o manuseio da ferramenta rclone.
 
-Ainda encontra-se em versão inicial, permitindo apenas fazer mount/unmount de armazenamentos remotos já configurados
-via linha de comando. Se você ainda não possui nenhuma configuração do rclone, não será possível utilizar esta GUI.
+Ainda encontra-se em versão inicial, portanto esteja preparado para encontrar bugs ou comportamentos estranhos.
+Caso algo não saia conforme esperado, por favor, [abra uma issue](https://github.com/Treech3r/Rclone-GUI/issues/new)
+para que eu fique ciente e corrija o mais rápido possível.
+
+OBS.: Apesar de ser possível executar o projeto em ambientes Linux, eu não testo ativamente nessa plataforma.
 
 # Funcionalidades
 
-✅ Fazer mount (Google Drive)
+✅ Configurar armazenamentos remotos
 
-✅ Controlar o nível de acesso do mount: Apenas leitura/Permitir escrita
-
-✅ Montar para uma letra de drive (Windows)
-
-❓Otimizar o cache para obter a prévia dos arquivos rapidamente
-
-❌ Configurar armazenamentos remotos
-
-❌ Personalizar configurações avançadas de mount
+✅ Fazer montagem dos armazenamentos remotos
 
 # Requisitos
 Por si só, o Rclone **não** é capaz de realizar mounts em seu sistema. É necessário instalar um software adicional para
-esta tarefa.
+esta tarefa. **Isto não é um requisito gerado por este projeto**. Até mesmo nos casos onde o Rclone é utilizado puramente
+via linha de comando, é necessário instalar os softwares mencionados abaixo.
 
-Para usuários Windows: instale o [winfsp](https://winfsp.dev/rel/).
+Para Windows, instale o [winfsp](https://winfsp.dev/rel/).
 
-Para usuários macOS: instale o [FUSE-T](https://www.fuse-t.org/).
+Para macOS, instale o [FUSE-T](https://www.fuse-t.org/).
 
-**Isto não é um requisito gerado por este projeto**. Até mesmo nos casos onde o Rclone é utilizado puramente via linha
-de comando, é necessário instalar os softwares mencionados acima.
+Para Linux, é necessário a biblioteca `fuse3`, que geralmente já vem instalada por padrão nas distros mais populares.
 
 # Compilando a partir do código fonte
-A maravilha do código aberto é não precisar confiar em ninguém. Analise a fonte por conta própria e, quando concluir,
+A maravilha do código aberto é dispensar o fator confiança. Analise o código fonte por conta própria e
 construa seu próprio executável para ter a certeza que nenhum agente malicioso foi introduzido no programa.
 
-Este é um projeto Flutter que não requer nenhuma configuração especial para rodar o build. Sendo assim, basta seguir a
-documentação oficial de build voltada para o seu sistema: 
+Este é um projeto Flutter Desktop que não requer nenhuma configuração especial para rodar o build. Sendo assim, basta clonar este
+repositório e seguir a documentação oficial de build voltada para o seu sistema: 
 [Windows](https://docs.flutter.dev/platform-integration/windows/building), 
-[macOS](https://docs.flutter.dev/platform-integration/macos/building)
-(Linux em breve!).
-
-Nota os usuários que compilam para Windows: É necessário baixar o arquivo 
-[sqlite3.dll](https://www.sqlite.org/download.html) e colocá-lo no mesmo diretório do executável compilado. Caso 
-contrário, o programa não iniciará.
+[macOS](https://docs.flutter.dev/platform-integration/macos/building),
+[Linux](https://docs.flutter.dev/platform-integration/linux/building).
 
 # Executáveis pré-compilados
 Para aqueles que não desejam passar pelo processo de construir seu próprio executável ou baixar arquivos externos, é
