@@ -107,11 +107,16 @@ class _MountInfoEditingScreenState
     final newName = mountNameTextController.text.trim();
 
     final newMount = widget.mount!.copyWith(
-      name: newName.isNotEmpty ? newName : null,
       allowWrite: !readOnly,
       mountPath: mountPath,
       remote: selectedRemote,
     );
+
+    if (newName.isEmpty) {
+      newMount.name = null;
+    } else {
+      newMount.name = newName;
+    }
 
     await ref.read(MountService.instance.notifier).editMount(newMount);
 
