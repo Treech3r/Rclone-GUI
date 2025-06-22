@@ -41,8 +41,11 @@ class _RemoteTileState extends State<RemoteTile> {
           constraints: const BoxConstraints(maxHeight: 170),
           // Match GridView mainAxisExtent
           child: AnimatedContainer(
+            decoration: BoxDecoration(
+              borderRadius:  BorderRadius.circular(12),
+              color: isHovered ? primaryColor : inversePrimaryColor,
+            ),
             duration: const Duration(milliseconds: 150),
-            color: isHovered ? primaryColor : inversePrimaryColor,
             clipBehavior: Clip.hardEdge,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 130),

@@ -57,7 +57,7 @@ class _MountPointListState extends ConsumerState<MountPointGrid> {
 
         return GridView.builder(
           clipBehavior: Clip.hardEdge,
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(8),
           itemCount: mounts.length,
           itemBuilder: (context, index) {
             return MountPointGridTile(mounts.elementAt(index));
