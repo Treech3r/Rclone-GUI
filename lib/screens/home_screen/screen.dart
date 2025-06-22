@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/remote_service.dart';
 import 'widgets/custom_tab_bar.dart';
-import 'widgets/mount_point_list.dart';
+import 'widgets/mount_point_grid.dart';
 import 'widgets/remote_grid.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           SizedBox(height: 60),
           Expanded(
             child: currentTab == Tab.mount
-                ? MountPointList()
+                ? MountPointGrid()
                 : RemoteGrid(),
           ),
         ],
