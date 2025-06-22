@@ -1,17 +1,48 @@
 import 'system_shell.dart';
 
-Future<List<String>> getAvailableDriveLetters() async {
-  const powershellCommand =
-      'powershell -c \'(Get-WmiObject -Class Win32_LogicalDisk).DeviceID.Replace(":","")\'';
+abstract class WindowsHelper {
+  static List<String> get allDriveLetters {
+    return [
+      'A',
+      'B',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'U',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z'
+    ];
+  }
 
-  var lettersCurrentlyInUse =
-      (await SystemShell.runCommand(powershellCommand)).stdout as String;
+  static Future<List<String>> getAvailableDriveLetters() async {
+    const powershellCommand =
+        'powershell -c \'(Get-WmiObject -Class Win32_LogicalDisk).DeviceID.Replace(":","")\'';
 
-  lettersCurrentlyInUse = lettersCurrentlyInUse.replaceAll(':', '');
-  lettersCurrentlyInUse.replaceFirst('Caption', '');
+    var lettersCurrentlyInUse =
+        (await SystemShell.runCommand(powershellCommand)).stdout as String;
 
-  return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      .split('')
-      .where((letter) => !lettersCurrentlyInUse.contains(letter))
-      .toList();
+    lettersCurrentlyInUse = lettersCurrentlyInUse.replaceAll(':', '');
+    lettersCurrentlyInUse.replaceFirst('Caption', '');
+
+    return allDriveLetters
+        .where((letter) => !lettersCurrentlyInUse.contains(letter))
+        .toList();
+  }
 }

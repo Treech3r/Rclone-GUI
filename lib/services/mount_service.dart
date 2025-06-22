@@ -58,7 +58,7 @@ class MountService extends StateNotifier<List<Mount>> {
 
   Future<void> editMount(Mount mount) async {
     await SqfliteService.updateMount(mount);
-    state = [...state];
+    state = state.map((m) => m.id == mount.id ? mount : m).toList();
   }
 
   Future<void> deleteMount(Mount mount) async {

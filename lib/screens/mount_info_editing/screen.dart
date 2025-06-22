@@ -23,36 +23,31 @@ class MountInfoEditingScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MountInfoEditingScreen> createState() => _MountInfoEditingScreenState();
+  ConsumerState<MountInfoEditingScreen> createState() =>
+      _MountInfoEditingScreenState();
 }
 
-class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen> {
-  List<String> windowsDriveLetters = [];
-  String mountPath = '';
+class _MountInfoEditingScreenState
+    extends ConsumerState<MountInfoEditingScreen> {
+  String mountPath = 'A';
   bool readOnly = false;
   late Remote selectedRemote;
   final mountNameTextController = TextEditingController();
 
   @override
   void initState() {
-    if (Platform.isWindows) {
-      getAvailableDriveLetters().then((letters) => setState(() {
-            windowsDriveLetters = letters;
-          }));
-
-      super.initState();
-    }
-
     if (widget.selectedRemote != null) {
       selectedRemote = widget.selectedRemote!;
     }
 
     if (widget.mount != null) {
-      mountPath = widget.mount!.mountPath;
       readOnly = !widget.mount!.allowWrite;
       selectedRemote = widget.mount!.remote!;
       mountNameTextController.text = widget.mount!.name ?? '';
+      mountPath = widget.mount!.mountPath;
     }
+
+    super.initState();
   }
 
   @override
@@ -109,15 +104,16 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
   }
 
   Future<void> editMount(BuildContext context) async {
-    widget.mount!.remote = selectedRemote;
-    if (mountNameTextController.text.trim().isEmpty) {
-      widget.mount?.name = null;
-    } else {
-      widget.mount?.name = mountNameTextController.text;
-    }
-    widget.mount!.allowWrite = !readOnly;
+    final newName = mountNameTextController.text.trim();
 
-    await ref.read(MountService.instance.notifier).editMount(widget.mount!);
+    final newMount = widget.mount!.copyWith(
+      name: newName.isNotEmpty ? newName : null,
+      allowWrite: !readOnly,
+      mountPath: mountPath,
+      remote: selectedRemote,
+    );
+
+    await ref.read(MountService.instance.notifier).editMount(newMount);
 
     if (context.mounted) {
       Navigator.of(context).pop();
@@ -142,7 +138,7 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
   Widget build(BuildContext context) {
     Widget mountPathPicker = Platform.isWindows
         ? WindowsDriveLetterPicker(
-            windowsDriveLetters,
+            WindowsHelper.allDriveLetters,
             chooseWindowsPath,
             mountPath,
           )
@@ -156,9 +152,7 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.mount != null
-              ? 'Editando drive'
-              : 'Criando novo drive',
+          widget.mount != null ? 'Editando drive' : 'Criando novo drive',
         ),
       ),
       body: Padding(
@@ -230,9 +224,7 @@ class _MountInfoEditingScreenState extends ConsumerState<MountInfoEditingScreen>
           RoundedButton(
             enabledColor: Colors.deepPurpleAccent,
             externalPadding: const EdgeInsets.all(12.0),
-            label: widget.mount != null
-                ? 'Salvar drive'
-                : 'Criar drive',
+            label: widget.mount != null ? 'Salvar drive' : 'Criar drive',
             onPressed: mountPath.isEmpty
                 ? null
                 : () {
@@ -301,6 +293,12 @@ class WindowsDriveLetterPicker extends StatefulWidget {
 
 class _WindowsDriveLetterPickerState extends State<WindowsDriveLetterPicker> {
   String? _selectedDrive;
+
+  @override
+  void initState() {
+    _selectedDrive = widget.initialValue;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

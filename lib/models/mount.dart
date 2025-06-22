@@ -33,6 +33,24 @@ class Mount {
     );
   }
 
+  Mount copyWith({
+    int? id,
+    String? name,
+    Remote? remote,
+    String? remotePath,
+    String? mountPath,
+    bool? allowWrite,
+  }) {
+    return Mount(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      remote: remote ?? this.remote,
+      remotePath: remotePath ?? this.remotePath,
+      mountPath: mountPath ?? this.mountPath,
+      allowWrite: allowWrite ?? this.allowWrite,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
