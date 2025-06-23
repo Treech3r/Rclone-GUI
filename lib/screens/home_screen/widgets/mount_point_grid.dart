@@ -63,7 +63,7 @@ class _MountPointListState extends ConsumerState<MountPointGrid> {
             return MountPointGridTile(mounts.elementAt(index));
           },
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisExtent: itemWidth + 40,
+            mainAxisExtent: itemWidth + 100,
             crossAxisCount: crossAxisCount,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,

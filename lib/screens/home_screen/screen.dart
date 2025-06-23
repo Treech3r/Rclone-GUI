@@ -37,7 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           SizedBox(height: 60),
           CustomTabBar(onTabChange: (tab) => setState(() => currentTab = tab)),
-          SizedBox(height: 60),
+          SizedBox(height: 12),
           Expanded(
             child: currentTab == Tab.mount
                 ? MountPointGrid()

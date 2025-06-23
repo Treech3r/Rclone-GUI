@@ -28,6 +28,12 @@ class MyApp extends StatelessWidget {
       title: 'Rclone GUI',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.black,
+        cardTheme: CardThemeData(
+          color: const Color(0xFF202020),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
         colorScheme: ColorScheme.highContrastDark(
           brightness: Brightness.dark,
           onPrimary: const Color(0xFF202020),

@@ -48,17 +48,21 @@ class _MountPointGridTileState extends State<MountPointGridTile> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final availableWidth = constraints.maxWidth - 155;
+    return LayoutBuilder(builder: (context, constraints) {
+      final availableWidth = constraints.maxWidth - 155;
 
-        return Card(
-          color: Theme.of(context).colorScheme.inversePrimary,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: [
-                Row(
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 12, bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(20),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
                   children: [
                     widget.mount.remote == null
                         ? Icon(Icons.error, color: Colors.red, size: 50)
@@ -89,8 +93,15 @@ class _MountPointGridTileState extends State<MountPointGridTile> {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
-                Row(
+              ),
+              SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.only(top: 12, bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(20),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -131,54 +142,66 @@ class _MountPointGridTileState extends State<MountPointGridTile> {
                     ),
                   ],
                 ),
-                SizedBox(height: 24),
-                ValueListenableBuilder(
-                  valueListenable: widget.mount.isMounted,
-                  builder: (ctx, isMounted, _) {
-                    if (isMounted) {
-                      return RoundedButton(
-                        label: 'Desmontar',
-                        onPressed: isMounting ? null : unMount,
-                        style: RoundedButtonStyle.danger,
-                      );
-                    }
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        RoundedButton(
-                          label: 'Montar',
-                          style: RoundedButtonStyle.primary,
-                          onPressed: isMounting || widget.mount.remote == null
-                              ? null
-                              : mount,
-                        ),
-                        SizedBox(height: 14),
-                        RoundedButton(
-                          style: RoundedButtonStyle.secondary,
-                          label: 'Editar',
-                          onPressed: isMounting
-                              ? null
-                              : () {
-                                  Navigator.of(context).push<Mount>(
-                                    MaterialPageRoute(
-                                      builder: (_) => MountInfoEditingScreen(
-                                        mount: widget.mount,
-                                      ),
-                                    ),
-                                  );
-                                },
-                        )
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 12),
+              ValueListenableBuilder(
+                valueListenable: widget.mount.isMounted,
+                builder: (ctx, isMounted, _) {
+                  return Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isMounted ? Colors.red.withAlpha(30) : Colors.blue.withAlpha(30),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: isMounted
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.spaceBetween,
+                        children: isMounted
+                            ? [
+                                RoundedButton(
+                                  label: 'Desmontar',
+                                  onPressed: isMounting ? null : unMount,
+                                  style: RoundedButtonStyle.danger,
+                                )
+                              ]
+                            : [
+                                RoundedButton(
+                                  label: 'Montar',
+                                  style: RoundedButtonStyle.primary,
+                                  onPressed:
+                                      isMounting || widget.mount.remote == null
+                                          ? null
+                                          : mount,
+                                ),
+                                RoundedButton(
+                                  style: RoundedButtonStyle.secondary,
+                                  label: 'Editar',
+                                  onPressed: isMounting
+                                      ? null
+                                      : () {
+                                          Navigator.of(context).push<Mount>(
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  MountInfoEditingScreen(
+                                                mount: widget.mount,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                )
+                              ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        );
-      }
-    );
+        ),
+      );
+    });
   }
 }
