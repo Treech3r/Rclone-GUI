@@ -34,9 +34,9 @@ class MountService extends StateNotifier<List<Mount>> {
       'fs': '${mount.remote!.name}:',
       'mountPoint': mountPath,
       'mountOpt':
-          '{"DeviceName": "$mountName", "VolumeName": "$mountName", "AllowNonEmpty": true, "AllowOther": true, "AttrTimeout": "1s", "MaxDepth": "1"}',
+          '{"DeviceName": "$mountName", "VolumeName": "$mountName", "AllowNonEmpty": true, "AllowOther": true, "AttrTimeout": "1s", "MaxDepth": "1", "NonChecksum": true, "NoModtime": true}',
       'vfsOpt':
-          '{"CacheMode": 3, "ReadOnly": ${!mount.allowWrite}, "DirCacheTime": "60h", "ChunkSize": "32M", "ChunkSizeLimit": "512M", "CacheMaxAge": "5m"}',
+          '{"CacheMode": 3, "ReadOnly": ${!mount.allowWrite}, "DirCacheTime": "60h", "ReadChunkSize": "5M", "ReadChunkStreams": 10, "CacheMaxAge": "5m", "FastFingerprint": true}',
       'TPSLimit': '10',
       'TPSLimitBurst': '10',
       'BufferSize': '1M',
