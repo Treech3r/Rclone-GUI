@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 enum RemoteCreationInputType {
   text,
   password,
@@ -14,6 +16,7 @@ class RemoteCreationTextInput {
   final String? defaultValue;
   final Map<String, String>? options;
   final String? hint;
+  final IconData? prefixIcon;
 
   RemoteCreationTextInput({
     required this.key,
@@ -23,5 +26,6 @@ class RemoteCreationTextInput {
     this.defaultValue,
     this.options,
     this.hint,
+    this.prefixIcon,
   });
 }

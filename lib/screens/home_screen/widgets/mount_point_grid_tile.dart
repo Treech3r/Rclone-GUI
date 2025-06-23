@@ -139,7 +139,7 @@ class _MountPointGridTileState extends State<MountPointGridTile> {
                       return RoundedButton(
                         label: 'Desmontar',
                         onPressed: isMounting ? null : unMount,
-                        enabledColor: Colors.red,
+                        style: RoundedButtonStyle.danger,
                       );
                     }
 
@@ -149,13 +149,14 @@ class _MountPointGridTileState extends State<MountPointGridTile> {
                       children: [
                         RoundedButton(
                           label: 'Montar',
-                          enabledColor: Colors.purpleAccent,
+                          style: RoundedButtonStyle.primary,
                           onPressed: isMounting || widget.mount.remote == null
                               ? null
                               : mount,
                         ),
                         SizedBox(height: 14),
                         RoundedButton(
+                          style: RoundedButtonStyle.secondary,
                           label: 'Editar',
                           onPressed: isMounting
                               ? null

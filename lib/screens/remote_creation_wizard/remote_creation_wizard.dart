@@ -68,6 +68,9 @@ class RemoteConfigWizardState extends ConsumerState<RemoteCreationWizard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RoundedButton(
+                  style: notifier.isLastStep
+                      ? RoundedButtonStyle.primary
+                      : RoundedButtonStyle.secondary,
                   onPressed: state.isLoading
                       ? null
                       : () async {

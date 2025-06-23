@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/remote_creation/remote_creation.dart';
@@ -21,6 +22,7 @@ abstract class Config {
               RemoteCreationTextInput(
                 key: 'name',
                 label: 'Dê um nome para o seu Google Drive',
+                prefixIcon: Icons.drive_file_rename_outline,
                 hint:
                     'É possível conectar várias contas do Google Drive simultaneamente, então você precisa nomear cada conta para lhe ajudar a identificar no futuro.',
                 type: RemoteCreationInputType.text,
@@ -29,6 +31,7 @@ abstract class Config {
               RemoteCreationTextInput(
                 key: 'client_id',
                 label: 'Client ID',
+                prefixIcon: Icons.account_circle_outlined,
                 hint:
                     'Você pode criar um Client ID no Google Cloud Console. É recomendado criar um Client ID para evitar limites de requisições.',
                 type: RemoteCreationInputType.text,
@@ -36,6 +39,7 @@ abstract class Config {
               RemoteCreationTextInput(
                 key: 'client_secret',
                 label: 'Client Secret',
+                prefixIcon: Icons.key_outlined,
                 hint:
                     'Você pode criar um Client Secret no Google Cloud Console. É recomendado criar um Client Secret para evitar limites de requisições.',
                 type: RemoteCreationInputType.password,
@@ -43,6 +47,7 @@ abstract class Config {
               RemoteCreationTextInput(
                 key: 'root_folder_id',
                 label: 'ID de pasta raiz',
+                prefixIcon: Icons.folder_outlined,
                 hint:
                     'Se você informar um ID de pasta raiz, o rclone só irá acessar essa pasta e suas subpastas. Se não definir, o rclone irá acessar todo o seu Google Drive.',
                 type: RemoteCreationInputType.text,
@@ -50,6 +55,7 @@ abstract class Config {
               RemoteCreationTextInput(
                 key: 'team_drive',
                 label: 'ID de Drive de Equipe',
+                prefixIcon: Icons.folder_outlined,
                 hint:
                     'Se você não informar um ID de Drive de Equipe, o rclone irá usar o seu Google Drive pessoal. Você pode informar um ID de Drive de Equipe para montar um Drive de Equipe específico.',
                 type: RemoteCreationInputType.text,

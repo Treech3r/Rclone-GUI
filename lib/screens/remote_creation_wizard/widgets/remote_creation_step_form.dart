@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../models/remote_creation/remote_creation_input.dart';
 import '../../../models/remote_creation/remote_creation_state_manager.dart';
 import '../../../models/remote_creation/remote_creation_step.dart';
+import '../../../widgets/custom_text_field.dart';
 
 class RemoteCreationStepForm extends StatefulWidget {
   final GlobalKey<FormState> globalKey;
@@ -52,8 +53,15 @@ class RemoteCreationStepFormState extends State<RemoteCreationStepForm> {
       case RemoteCreationInputType.text:
       case RemoteCreationInputType.password:
         return CustomTextField(
-          param: param,
-          stateManager: widget.stateManager,
+          prefixIcon: param.prefixIcon,
+          tooltipMessage: param.hint,
+          obscureText: param.type == RemoteCreationInputType.password,
+          initialValue: param.defaultValue,
+          onChanged: (value) {
+            widget.stateManager.updateConfig({param.key: value});
+          },
+          labelText: param.label,
+          required: param.required,
         );
 
       case RemoteCreationInputType.boolean:
@@ -94,127 +102,22 @@ class RemoteCreationStepFormState extends State<RemoteCreationStepForm> {
           },
         );
       case RemoteCreationInputType.number:
-        return TextFormField(
-          decoration: InputDecoration(
-            labelText: param.label,
-            hintText: param.hint,
-          ),
+        return CustomTextField(
+          prefixIcon: param.prefixIcon,
+          labelText: param.label,
+          tooltipMessage: param.hint,
           keyboardType: TextInputType.number,
           initialValue: param.defaultValue,
+          required: param.required,
           validator: (value) {
-            if (param.required && (value == null || value.isEmpty)) {
-              return 'Campo obrigatório';
-            }
             if (value != null && double.tryParse(value) == null) {
               return 'Digite um número válido';
             }
             return null;
           },
-          onSaved: (value) =>
-              widget.stateManager.updateConfig({param.key: value ?? ''}),
+          onChanged: (value) =>
+              widget.stateManager.updateConfig({param.key: value}),
         );
     }
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final RemoteCreationTextInput param;
-  final RemoteCreationStateManager stateManager;
-
-  static const errorColor = Color(0xFFff5e5e);
-
-  const CustomTextField({
-    required this.param,
-    required this.stateManager,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 170),
-      child: Tooltip(
-        padding: const EdgeInsets.all(8),
-        waitDuration: const Duration(seconds: 1),
-        message: param.hint ?? '',
-        textStyle: const TextStyle(color: Colors.white, fontSize: 12),
-        decoration: BoxDecoration(
-          color: Colors.deepPurpleAccent.withAlpha(95),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: TextFormField(
-          maxLines: 1,
-          minLines: 1,
-          obscureText: param.type == RemoteCreationInputType.password,
-          initialValue: param.defaultValue,
-          validator: (value) {
-            if (param.required && (value == null || value.isEmpty)) {
-              return 'Campo obrigatório';
-            }
-            return null;
-          },
-          onChanged: (value) => stateManager.updateConfig({param.key: value}),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-          ),
-          cursorColor: Colors.deepPurpleAccent,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: const Color(0xFF0c0c0c),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
-            ),
-            labelText: param.label,
-            labelStyle: const TextStyle(
-              color: Colors.white54,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            floatingLabelStyle: const TextStyle(
-              color: Colors.deepPurpleAccent,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-            hintMaxLines: 2,
-            errorStyle: const TextStyle(
-              color: errorColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Colors.white24,
-                width: 1,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Colors.deepPurpleAccent,
-                width: 1.5,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: errorColor,
-                width: 1,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: errorColor,
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

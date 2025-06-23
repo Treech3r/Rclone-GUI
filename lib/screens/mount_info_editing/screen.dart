@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rclone_gui/widgets/custom_text_field.dart';
 
 import '../../models/mount.dart';
 import '../../models/remote.dart';
@@ -148,6 +149,7 @@ class _MountInfoEditingScreenState
             mountPath,
           )
         : RoundedButton(
+            style: RoundedButtonStyle.secondary,
             onPressed: () => selectMountPoint(),
             label: mountPath.isEmpty
                 ? 'Selecionar pasta vazia para montar'
@@ -180,35 +182,20 @@ class _MountInfoEditingScreenState
             Text(
                 'Você pode clicar no armazenamento acima para trocá-lo por outro armazenamento'),
             SizedBox(height: 12.0),
-            TextFormField(
+            CustomTextField(
+              prefixIcon: Icons.drive_file_rename_outline,
               controller: mountNameTextController,
-              decoration: InputDecoration(
-                labelText: 'Nome do drive (opcional)',
-                labelStyle: TextStyle(
-                  fontSize: 16.0,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.deepPurpleAccent, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white24, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                ),
-                prefixIcon: Icon(Icons.info, color: Colors.grey),
-                filled: true,
-              ),
+              labelText: 'Nome do drive (opcional)',
+              tooltipMessage: Platform.isWindows
+                  ? 'Este é o nome do drive no gerenciador de arquivos do Windows. Por exemplo, "Meu Drive (A:)".'
+                  : 'Este é o nome da pasta que aparecerá no gerenciador de arquivos (ou terminal) do seu sistema operacional. Por exemplo, "meu_drive".',
             ),
             SizedBox(height: 12.0),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Checkbox(
-                  activeColor: Colors.deepPurpleAccent,
+                  activeColor: Colors.blue,
                   checkColor: Colors.white,
                   value: readOnly,
                   onChanged: (newValue) => setState(() {
@@ -227,7 +214,7 @@ class _MountInfoEditingScreenState
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           RoundedButton(
-            enabledColor: Colors.deepPurpleAccent,
+            style: RoundedButtonStyle.primary,
             externalPadding: const EdgeInsets.all(12.0),
             label: widget.mount != null ? 'Salvar drive' : 'Criar drive',
             onPressed: mountPath.isEmpty
@@ -242,7 +229,7 @@ class _MountInfoEditingScreenState
           ),
           if (widget.mount != null)
             RoundedButton(
-              enabledColor: Colors.red,
+              style: RoundedButtonStyle.danger,
               externalPadding: const EdgeInsets.all(12.0),
               label: 'Deletar drive',
               onPressed: () {
@@ -267,7 +254,7 @@ class _MountInfoEditingScreenState
                               deleteMount(context);
                               Navigator.of(ctx).pop();
                             },
-                            enabledColor: Colors.red,
+                            style: RoundedButtonStyle.danger,
                           ),
                         ],
                       )
